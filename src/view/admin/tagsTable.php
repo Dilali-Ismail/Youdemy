@@ -1,12 +1,7 @@
-
-
 <?php
-
-require realpath(__DIR__.'/../../../../') . '/vendor/autoload.php';
+require_once '../../../vendor/autoload.php';
 use App\Controller\TagController ;
-
 $TagCon = new TagController();
-
 if(isset($_POST['addTag'])){
     
     if(!empty($_POST['TagName'])){
@@ -82,7 +77,7 @@ $resultTags = $TagCon->getTags();
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+                <div class="sidebar-brand-text mx-3">Youdemy</div>
             </a>
 
             <!-- Divider -->
@@ -90,7 +85,7 @@ $resultTags = $TagCon->getTags();
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="./dashboard.php">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -409,9 +404,6 @@ $resultTags = $TagCon->getTags();
 
                     <!-- Page Heading -->
                     <h1 class="h3 mb-2 text-gray-800">Tags</h1>
-                    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-                        For more information about DataTables, please visit the <a target="_blank"
-                            href="https://datatables.net">official DataTables documentation</a>.</p>
 
 
                             <form action="" method="post">
@@ -422,7 +414,7 @@ $resultTags = $TagCon->getTags();
                                 </div>
                                 <button type="submit" name="addTag" class="btn btn-primary" id="addTag">Add</button>
                                 </div>
-                            </form>
+                          
                            
 
                     <!-- DataTales Example -->
@@ -459,13 +451,13 @@ $resultTags = $TagCon->getTags();
                                         ?>
                                         <tr>
                                             <td><?=$value['id'] ?></td>
-                                            <td id=<?='tagename' . $value['id'] ?>><?=$value['name'] ?></td>
+                                            <td id=<?='tagename' . $value['id'] ?>><?=$value['title'] ?></td>
                                             <td><?=$value['created_at'] ?? 'Not Found' ?></td>
                                             <td><?=$value['updated_at'] ?? 'Not Found' ?></td>
                                             <td><?=$value['deleted_at'] ?? 'Not Found' ?></td>
                                             <td> 
-                                           <form action="" method="post" ><button href="#" class="btn btn-danger" name="deletTag"> <input type="text" name = "IdDelet"  value= "<?=$value['id'] ?>" hidden > <i class="fas fa-trash"></i></button>
-                                            <button type="button" class="btn btn-primary " onclick="edittag(<?=$value['id'] ?>)"><i class="fa-solid fa-pen-to-square"></i></button></form>
+                                             <button href="#" class="btn btn-danger" name="deletTag"> <input type="text" name = "IdDelet"  value= "<?=$value['id'] ?>" hidden > <i class="fas fa-trash"></i></button>
+                                            <button type="button" class="btn btn-primary " onclick="edittag(<?=$value['id'] ?>)"><i class="fa-solid fa-pen-to-square"></i></button>
                                             </td>
                                         </tr>
                                         <?php endforeach ;?>
@@ -474,7 +466,7 @@ $resultTags = $TagCon->getTags();
                             </div>
                         </div>
                     </div>
-
+             </form>
                 </div>
                 <!-- /.container-fluid -->
 

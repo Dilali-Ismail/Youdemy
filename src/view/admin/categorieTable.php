@@ -1,8 +1,5 @@
-
-
 <?php
-
-require realpath(__DIR__.'/../../../../') . '/vendor/autoload.php';
+require_once '../../../vendor/autoload.php';
 use App\Controller\CategorieController ;
 
 $categorieCon = new CategorieController();
@@ -412,7 +409,7 @@ $resultcategories = $categorieCon->getCategorieC();
                                 </div>
                                 <button type="submit" name="addCategorie" class="btn btn-primary" id="addCategorie">Add</button>
                                 </div>
-                            </form>
+                         
                            
 
                     <!-- DataTales Example -->
@@ -451,8 +448,8 @@ $resultcategories = $categorieCon->getCategorieC();
                                             <td><?=$value['created_at'] ?? 'Not Found' ?></td>
                                             <td><?=$value['updated_at'] ?? 'Not Found' ?></td>
                                             <td> 
-                                           <form action="" method="post" ><button href="#" class="btn btn-danger" name="deletCategorie"> <input type="text" name = "IdDelet"  value= "<?=$value['id'] ?>" hidden > <i class="fas fa-trash"></i></button>
-                                            <button type="button" class="btn btn-primary " onclick="editcategorie(<?=$value['id'] ?>)"><i class="fa-solid fa-pen-to-square"></i></button></form>
+                                           <button href="#" class="btn btn-danger" name="deletCategorie"> <input type="text" name = "IdDelet"  value= "<?=$value['id'] ?>" hidden > <i class="fas fa-trash"></i></button>
+                                            <button type="button" class="btn btn-primary " onclick="editcategorie(<?=$value['id'] ?>)"><i class="fa-solid fa-pen-to-square"></i></button>
                                             </td>
                                         </tr>
                                         <?php endforeach ;?>
@@ -461,6 +458,7 @@ $resultcategories = $categorieCon->getCategorieC();
                             </div>
                         </div>
                     </div>
+                    </form>
 
                 </div>
                 <!-- /.container-fluid -->

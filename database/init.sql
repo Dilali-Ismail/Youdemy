@@ -93,6 +93,15 @@ INSERT INTO User (role_id, name, email, password, photo, isActive, deleted_at) V
 (2, 'David Simon', 'david.simon@example.com', 'password123', 'david.jpg', TRUE, NULL),
 (3, 'ismail dilali', 'ismail@gmail.com', '1234', 'david.jpg', TRUE, NULL);
 
+
+
+
+
+
+
+
+
+
 INSERT INTO Categories (name, created_at) VALUES 
 ('Programmation', CURDATE()), 
 ('Design', CURDATE()), 
@@ -156,3 +165,7 @@ INSERT INTO Cours (title, description, content, cat_id, isArchive, created_at) V
 
 
 select * from User;
+
+
+SELECT User.id  , User.name , User.email , User.password , User.role_id , Roles.id as role_id, Roles.name as role_title
+from User INNER JOIN Roles on Roles.id = User.role_id where User.`isActive` = 1 ;

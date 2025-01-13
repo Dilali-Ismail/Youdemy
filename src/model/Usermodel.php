@@ -10,13 +10,12 @@ use App\config\Connexion ;
    private $con ;
    public function __construct()
    {
-    $db = new Connexion();
-    $this->con = $db->connection();
+    $this->con = Connexion::connection();
    }
 
     public function findUserByEmailAndPassword($email,$password){
-    $querry = "SELECT user.id  , user.name , user.email , user.password , role.id as role_id ,role.title as role_title
-              from user INNER JOIN role on role.id = user.role where user.email = :email";
+    $querry = "SELECT User.id  , User.name , User.email , User.password , User.role_id , Roles.id as role_id, Roles.name as role_name
+               from User INNER JOIN Roles on Roles.id = User.role_id where User.email = :email";
     $stmt = $this->con->prepare($querry) ;
     $stmt->bindParam(":email",$email);
     $stmt->execute();
@@ -26,7 +25,7 @@ use App\config\Connexion ;
     }
     else{
        if(password_verify($password,$row['password'])) {
-        $role = new Role($row['role_id'],$row['role_title']);
+        $role = new Role($row['role_id'],$row['role_name']);
         $user = new User($row['id'],$row['name'],$row['email'],$row['password'],$role);
         return $user ;
        }

@@ -1,19 +1,19 @@
 <?php
-// session_start();
-// require_once '../../../vendor/autoload.php';
-// use App\Controller\Auth\Authcontroller ;
-// if(isset($_POST['submit']))
-// {
-//   if(empty($_POST['email']) && empty($_POST['password']))
-//   {
-//     echo "email or password are empty";
-//   }else{
-//     $email = $_POST['email'] ;
-//     $password = $_POST['password'];
-//     $Auth = new Authcontroller();
-//     $login = $Auth->login($email,$password);
-//   }
-// }
+session_start();
+require_once '../../../vendor/autoload.php';
+use App\Controller\Auth\Authcontroller ;
+if(isset($_POST['submit']))
+{
+  if(empty($_POST['email']) && empty($_POST['password']))
+  {
+    echo "email or password are empty";
+  }else{
+    $email = $_POST['email'] ;
+    $password = $_POST['password'];
+    $Auth = new Authcontroller();
+    $login = $Auth->login($email,$password);
+  }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

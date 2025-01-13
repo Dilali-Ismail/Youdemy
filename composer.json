@@ -1,0 +1,17 @@
+{
+    "name": "youcode/youdemy",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dilaly",
+            "email": "ismaildilali@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}

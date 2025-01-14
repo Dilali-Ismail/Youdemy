@@ -19,10 +19,11 @@ if(isset($_POST['editCategorie'])){
         $categorieCon->editCategorieC($categorieCreate , $id );
     }
 }
-if(isset($_POST['deletCategorie'])){
 
-        $id =  $_POST['IdDelet'];
+    if(isset($_POST['IdCategorieDelet'])){
+        $id = $_POST['IdCategorieDelet'];
         $categorieCon->deletCategorieC($id);
+    
     }
 
 $resultcategories = $categorieCon->getCategorieC();
@@ -77,7 +78,7 @@ $resultcategories = $categorieCon->getCategorieC();
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="dashboard.php">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -401,7 +402,7 @@ $resultcategories = $categorieCon->getCategorieC();
                             href="https://datatables.net">official DataTables documentation</a>.</p>
 
 
-                            <form action="" method="post">
+                            <form id= "tableauCategoriesubmit" action="" method="post">
                                  <div class="d-flex align-items-center my-5">
                                 <input type="text" name = "CategorieName" class="form-control me-2" placeholder="Enter tag name" id="CategorieInput">
                                 <div id="storeid">
@@ -448,7 +449,7 @@ $resultcategories = $categorieCon->getCategorieC();
                                             <td><?=$value['created_at'] ?? 'Not Found' ?></td>
                                             <td><?=$value['updated_at'] ?? 'Not Found' ?></td>
                                             <td> 
-                                           <button href="#" class="btn btn-danger" name="deletCategorie"> <input type="text" name = "IdDelet"  value= "<?=$value['id'] ?>" hidden > <i class="fas fa-trash"></i></button>
+                                           <button href="#" class="btn btn-danger" name="deletCategorie" onclick="deletCategorieFunc(event , <?=$value['id'] ?>)"> <input type="text" hidden > <i class="fas fa-trash"></i></button>
                                             <button type="button" class="btn btn-primary " onclick="editcategorie(<?=$value['id'] ?>)"><i class="fa-solid fa-pen-to-square"></i></button>
                                             </td>
                                         </tr>
@@ -536,6 +537,15 @@ $resultcategories = $categorieCon->getCategorieC();
             <input type="hidden" name="id-data" value="${id}" />
             `;
         }
+
+        function deletCategorieFunc(e , id){
+        e.preventDefault();
+        const inputhidden = event.target.querySelector('input');
+        inputhidden.setAttribute("name" , 'IdCategorieDelet');
+        inputhidden.setAttribute("value" , id);
+        console.log(inputhidden)
+        document.getElementById('tableauCategoriesubmit').submit();
+    }
     </script>
 </body>
 

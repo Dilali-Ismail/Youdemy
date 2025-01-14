@@ -13,6 +13,23 @@ use App\config\Connexion ;
     $this->con = Connexion::connection();
    }
 
+
+  public function getAllusers(){
+     $querry = " SELECT User.id  , User.name , User.email ,Roles.name as role_title , User.isActive
+               from User INNER JOIN Roles on Roles.id = User.role_id where User.role_id = 2 and User.deleted_at IS NULL ";
+     $stmt = $this->con->prepare($querry) ;
+     $stmt->execute(); 
+     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+     if(!$result){
+     return null ;
+     }
+     else{
+        echo 'error from database';
+         return $result ;
+     }
+
+  }
+
     public function findUserByEmailAndPassword($email,$password){
     $querry = "SELECT User.id  , User.name , User.email , User.password , User.role_id , Roles.id as role_id, Roles.name as role_name
                from User INNER JOIN Roles on Roles.id = User.role_id where User.email = :email";
@@ -38,7 +55,7 @@ use App\config\Connexion ;
         $hachingPassword = password_hash($password,PASSWORD_BCRYPT);
         $photo = "photo.jpg";
         try {
-            $query = "INSERT INTO User (role_id, name, email, password, photo, isActive, deleted_at) VALUES (:role , :name,:email , :password ,:photo, NuLL ,NULL )";
+            $query = "INSERT INTO User (role_id, name, email, password, photo, isActive, suspended , deleted_at) VALUES (:role , :name,:email , :password ,:photo, NULL ,NULL,NULL )";
             
             $stmt = $this->con->prepare($query);         
             $stmt->bindParam(":role", $role);
@@ -58,6 +75,57 @@ use App\config\Connexion ;
             error_log("Error add user: " . $e->getMessage());
             return false;
         }
+    }
+
+    public function activerUserM($id){
+        try{
+        $query = "UPDATE User SET User.isActive = 1 WHERE User.id = :id";
+        $stmt = $this->con->prepare($query);
+        $stmt->bindParam(':id',$id);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $this->con->lastInsertId();
+        }
+        catch (PDOException $e) {
+            echo "not activing user";
+            error_log("Error activing user: " . $e->getMessage());
+            return false;
+        }
+       }
+
+       public function susPUserM($id){
+        try{
+        $query = "UPDATE User SET User.suspended = 1 WHERE User.id = :id";
+        $stmt = $this->con->prepare($query);
+        $stmt->bindParam(':id',$id);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $this->con->lastInsertId();
+        }
+        catch (PDOException $e) {
+            echo "not activing user";
+            error_log("Error suspension user: " . $e->getMessage());
+            return false;
+        }
+       }
+
+
+       public function deletUserM($id){
+
+        try{
+        
+            $query = "UPDATE User SET User.deleted_at = CURRENT_DATE  WHERE User.id = :id";
+            $stmt = $this->con->prepare($query);
+            $stmt->bindParam(':id',$id);
+            $stmt->execute();
+            return $this->con->lastInsertId();
+        }
+        catch (PDOException $e) {
+        
+            error_log("Error Deleting tag: " . $e->getMessage());
+            return false;
+        }
+        
     }
     
  }

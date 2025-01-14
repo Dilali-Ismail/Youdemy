@@ -17,25 +17,17 @@ if(isset($_POST['edittag'])){
         $TagCon->editTagC($tagCreate , $id );
     }
 }
-if(isset($_POST['deletTag'])){
 
-        $id =  $_POST['IdDelet'];
-        $TagCon->deletTagC($id);
-    }
+if(isset($_POST['IdTagDelet'])){
+    $id = $_POST['IdTagDelet'];
+    $TagCon->deletTagC($id);
+
+}
 
 $resultTags = $TagCon->getTags();
 
 
 ?>
-
-
-
-
-
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -48,9 +40,8 @@ $resultTags = $TagCon->getTags();
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Tables</title>
+    <title>Tags- Tables</title>
 
-    <!-- Custom fonts for this template -->
     <link href="../../../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
@@ -406,7 +397,8 @@ $resultTags = $TagCon->getTags();
                     <h1 class="h3 mb-2 text-gray-800">Tags</h1>
 
 
-                            <form action="" method="post">
+                            <form id="tableauTagssubmit" action="" method="post">
+
                                  <div class="d-flex align-items-center my-5">
                                 <input type="text" name = "TagName" class="form-control me-2" placeholder="Enter tag name" id="tagInput">
                                 <div id="storeid">
@@ -456,8 +448,8 @@ $resultTags = $TagCon->getTags();
                                             <td><?=$value['updated_at'] ?? 'Not Found' ?></td>
                                             <td><?=$value['deleted_at'] ?? 'Not Found' ?></td>
                                             <td> 
-                                             <button href="#" class="btn btn-danger" name="deletTag"> <input type="text" name = "IdDelet"  value= "<?=$value['id'] ?>" hidden > <i class="fas fa-trash"></i></button>
-                                            <button type="button" class="btn btn-primary " onclick="edittag(<?=$value['id'] ?>)"><i class="fa-solid fa-pen-to-square"></i></button>
+                                             <button href="#" class="btn btn-danger" name="deletTag" onclick="deletTagFunc(event , <?=$value['id'] ?>)"> <input type="text"  hidden > <i class="fas fa-trash"></i></button>
+                                             <button type="button" class="btn btn-primary " onclick="edittag(<?=$value['id'] ?>)"><i class="fa-solid fa-pen-to-square"></i></button>
                                             </td>
                                         </tr>
                                         <?php endforeach ;?>
@@ -542,6 +534,15 @@ $resultTags = $TagCon->getTags();
             <input type="hidden" name="id-data" value="${id}" />
             `;
         }
+
+        function deletTagFunc(e , id){
+        e.preventDefault();
+        const inputhidden = event.target.querySelector('input')
+        inputhidden.setAttribute("name" , 'IdTagDelet');
+        inputhidden.setAttribute("value" , id);
+        console.log(inputhidden)
+        document.getElementById('tableauTagssubmit').submit();
+    }
     </script>
 </body>
 

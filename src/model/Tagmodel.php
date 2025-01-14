@@ -50,7 +50,7 @@ catch (PDOException $e) {
 public function editTagM($TagName,$id){
 
     try{
-    
+        
         $query = "UPDATE Tags SET Tags.title = :TagName , Tags.updated_at = CURRENT_DATE WHERE Tags.id = :id";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(':id',$id);

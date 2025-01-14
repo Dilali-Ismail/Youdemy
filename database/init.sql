@@ -15,6 +15,7 @@ CREATE TABLE User
     password VARCHAR(500) ,
     photo text ,
     isActive bool,
+    suspended bool ,
     deleted_at date ,
     PRIMARY KEY (id) ,
     foreign key (role_id) REFERENCES Roles(id) ON UPDATE CASCADE
@@ -52,7 +53,7 @@ CREATE TABLE CoursTags
     PRIMARY KEY (id)
 );
 
-CREATE TABLE Cours
+CREATE TABLE Cours 
 (
     id INT AUTO_INCREMENT ,
     title VARCHAR(500) UNIQUE ,
@@ -86,20 +87,12 @@ INSERT INTO Roles (name) VALUES
 ('Admin')
 ;
 
-INSERT INTO User (role_id, name, email, password, photo, isActive, deleted_at) VALUES
+INSERT INTO User (role_id, name, email, password, photo, isActive, suspended , deleted_at) VALUES
 (1, 'Alice Dupont', 'alice.dupont@example.com', 'password123', 'alice.jpg', TRUE, NULL),
 (1, 'Bob Martin', 'bob.martin@example.com', 'password123', 'bob.jpg', TRUE, NULL),
 (2, 'Claire Thomas', 'claire.thomas@example.com', 'password123', 'claire.jpg', TRUE, NULL),
 (2, 'David Simon', 'david.simon@example.com', 'password123', 'david.jpg', TRUE, NULL),
 (3, 'ismail dilali', 'ismail@gmail.com', '1234', 'david.jpg', TRUE, NULL);
-
-
-
-
-
-
-
-
 
 
 INSERT INTO Categories (name, created_at) VALUES 
@@ -165,7 +158,21 @@ INSERT INTO Cours (title, description, content, cat_id, isArchive, created_at) V
 
 
 select * from User;
+DELETE from `User`
+
+SELECT User.id  , User.name , User.email ,Roles.name as role_title 
+from User INNER JOIN Roles on Roles.id = User.role_id where User.role_id < 3 ;
 
 
-SELECT User.id  , User.name , User.email , User.password , User.role_id , Roles.id as role_id, Roles.name as role_title
-from User INNER JOIN Roles on Roles.id = User.role_id where User.`isActive` = 1 ;
+CREATE TRIGGER set_isActive_before_insert
+BEFORE INSERT ON User
+FOR EACH ROW
+BEGIN
+    IF NEW.role_id = 2 THEN
+        SET NEW.isActive = FALSE;
+    ELSE
+        SET NEW.isActive = TRUE;
+    END IF;
+END
+
+

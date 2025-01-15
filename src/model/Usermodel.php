@@ -30,33 +30,45 @@ use App\config\Connexion ;
 
   }
 
-    public function findUserByEmailAndPassword($email,$password){
-    $querry = "SELECT User.id  , User.name , User.email , User.password , User.role_id , Roles.id as role_id, Roles.name as role_name
-               from User INNER JOIN Roles on Roles.id = User.role_id where User.email = :email";
-    $stmt = $this->con->prepare($querry) ;
-    $stmt->bindParam(":email",$email);
+    public function findUserByEmailAndPassword($email, $password) {
+    $querry = "SELECT User.id, User.name, User.email, User.password, User.isActive, User.suspended, 
+                      User.role_id, Roles.id as role_id, Roles.name as role_name
+               FROM User 
+               INNER JOIN Roles ON Roles.id = User.role_id 
+               WHERE User.email = :email";
+    $stmt = $this->con->prepare($querry);
+    $stmt->bindParam(":email", $email);
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    if(!$row){
-        return null;
+
+    if (!$row) {
+        return ["status" => "error", "message" => "Email non trouvé"];
     }
-    else{
-       if(password_verify($password,$row['password'])) {
-        $role = new Role($row['role_id'],$row['role_name']);
-        $user = new User($row['id'],$row['name'],$row['email'],$row['password'],$role);
-        return $user ;
-       }
-        
+
+    if ($row['isActive'] == 0) {
+        return ["status" => "error", "message" => "Votre compte n'est pas activé"];
     }
+
+    if ($row['suspended'] == 1) {
+        return ["status" => "error", "message" => "Votre compte est suspendu"];
     }
+
+    if (password_verify($password, $row['password'])) {
+        $role = new Role($row['role_id'], $row['role_name']);
+        $user = new User($row['id'], $row['name'], $row['email'], $row['password'], $role);
+        return ["status" => "success", "user" => $user];
+    } else {
+        return ["status" => "error", "message" => "Mot de passe incorrect"];
+    }
+}
+
 
     public function createUserM($name, $email, $password, $role)
     {
         $hachingPassword = password_hash($password,PASSWORD_BCRYPT);
         $photo = "photo.jpg";
         try {
-            $query = "INSERT INTO User (role_id, name, email, password, photo, isActive, suspended , deleted_at) VALUES (:role , :name,:email , :password ,:photo, NULL ,NULL,NULL )";
-            
+            $query = "INSERT INTO User (role_id, name, email, password, photo, isActive, suspended , deleted_at) VALUES (:role , :name,:email , :password ,:photo, NULL ,0,NULL )";
             $stmt = $this->con->prepare($query);         
             $stmt->bindParam(":role", $role);
             $stmt->bindParam(":name", $name);

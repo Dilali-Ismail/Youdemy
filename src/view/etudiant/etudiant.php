@@ -6,6 +6,6 @@
     <title>Document</title>
 </head>
 <body>
-    hi from admin
+    hi from etudiant
 </body>
 </html>

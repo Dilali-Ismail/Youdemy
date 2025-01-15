@@ -46,10 +46,8 @@ CREATE TABLE CoursTags
     id INT AUTO_INCREMENT ,
     tag_id INT NOT NULL ,
     cours_id INT NOT NULL,
-    foreign key (tag_id) REFERENCES Tags(id) ON UPDATE cascade
-    ON DELETE cascade ,
-    foreign key (cours_id) REFERENCES Cours(id) ON UPDATE cascade
-    ON DELETE cascade,
+    foreign key (tag_id) REFERENCES Tags(id) ,
+    foreign key (cours_id) REFERENCES Cours(id) ,
     PRIMARY KEY (id)
 );
 
@@ -60,15 +58,17 @@ CREATE TABLE Cours
     description TEXT ,
     content text ,
     cat_id INT ,
-    tags INT  ,
     isArchive BOOLEAN ,
     created_at DATE NOT NULL ,
     updated_at DATE NULL,
     deleted_at DATE NULL,
-    foreign key (cat_id) REFERENCES Categories(id) ON UPDATE cascade
-    ON DELETE SET NULL ,
+    foreign key (cat_id) REFERENCES Categories(id) ,
     PRIMARY KEY (id)
 );
+
+
+drop table `Cours`;
+
 CREATE TABLE Inscription
 (
     user_id INT ,
@@ -99,9 +99,7 @@ INSERT INTO Categories (name, created_at) VALUES
 ('Programmation', CURDATE()), 
 ('Design', CURDATE()), 
 ('Marketing', CURDATE()), 
-('Data Science', CURDATE());
-
-INSERT INTO Categories (name, created_at) VALUES 
+('Data Science', CURDATE()),
 ('Business', CURDATE()), 
 ('Personal Development', CURDATE()), 
 ('Languages', CURDATE()), 
@@ -150,15 +148,8 @@ INSERT INTO Tags (title, created_at) VALUES
 ('Travel Planning', CURDATE()), 
 ('Career Coaching', CURDATE());
 
-INSERT INTO Cours (title, description, content, cat_id, isArchive, created_at) VALUES
-('Learn PHP', 'Comprehensive PHP course for beginners.', 'php_course_content.pdf', 1, FALSE, CURDATE()),
-('Graphic Design Basics', 'Introduction to the principles of graphic design.', 'design_course.pdf', 2, FALSE, CURDATE()),
-('Digital Marketing', 'Learn SEO, PPC, and social media strategies.', 'marketing_course.mp4', 3, FALSE, CURDATE()),
-('Data Science with Python', 'Use Python for data analysis and machine learning.', 'data_science_course.pdf', 4, FALSE, CURDATE());
 
-
-select * from User;
-DELETE from `User`
+select * from `Cours`;
 
 SELECT User.id  , User.name , User.email ,Roles.name as role_title 
 from User INNER JOIN Roles on Roles.id = User.role_id where User.role_id < 3 ;
@@ -175,4 +166,73 @@ BEGIN
     END IF;
 END
 
+INSERT INTO Cours (title, description, content, cat_id, isArchive, created_at) VALUES
+('Introduction à la Programmation', 
+ 'Ce cours vous enseigne les bases de la programmation en utilisant des exemples simples et des exercices pratiques.', 
+ 'https://www.youtube.com/embed/W6NZfCO5SIk?si=kVx1S9z8Abw0Yr6D', 
+ 1, 
+ 0, 
+ CURDATE()),
 
+('Principes de Design Graphique', 
+ 'Apprenez les concepts clés du design graphique, y compris la typographie, la couleur et la mise en page.', 
+ 'https://www.youtube.com/embed/SnxFkHqN1RA?si=-3H0WeV068wS72YO', 
+ 2, 
+ 0, 
+ CURDATE()),
+
+('Marketing Numérique pour Débutants', 
+ 'Découvrez les bases du marketing numérique, y compris le référencement, le marketing sur les réseaux sociaux et les campagnes publicitaires.', 
+ 'https://www.youtube.com/embed/e8wJBq6vOAI?si=7bwG26kkY9LXiBMV', 
+ 3, 
+ 0, 
+ CURDATE()),
+
+('Introduction à la Data Science', 
+ 'Apprenez les bases de la science des données, y compris le nettoyage des données, les visualisations et les modèles de base.', 
+ 'https://www.youtube.com/embed/xxpc-HPKN28?si=ZPUSkGI6ueQ2p6Ho', 
+ 4, 
+ 0, 
+ CURDATE()),
+
+('Développement Personnel : Gestion du Temps', 
+ 'Améliorez votre gestion du temps et augmentez votre productivité grâce à ce cours pratique.', 
+ 'https://www.youtube.com/embed/eOOmP6IUtOk?si=_KI2_nQ94n9aCtWT', 
+ 6, 
+ 0, 
+ CURDATE());
+
+INSERT INTO CoursTags (tag_id, cours_id) VALUES
+(1, 1), -- Tag "PHP" associé au cours "Introduction à la Programmation"
+(2, 1), -- Tag "JavaScript" associé au cours "Introduction à la Programmation"
+(4, 1), -- Tag "Python" associé au cours "Introduction à la Programmation"
+
+(16, 2), -- Tag "Graphic Design" associé au cours "Principes de Design Graphique"
+(18, 2), -- Tag "Drawing" associé au cours "Principes de Design Graphique"
+(19, 2), -- Tag "Painting" associé au cours "Principes de Design Graphique"
+
+(12, 3), -- Tag "Marketing" associé au cours "Marketing Numérique pour Débutants"
+(11, 3), -- Tag "Entrepreneurship" associé au cours "Marketing Numérique pour Débutants"
+
+(4, 4), -- Tag "Python" associé au cours "Introduction à la Data Science"
+(7, 4), -- Tag "SQL" associé au cours "Introduction à la Data Science"
+(8, 4), -- Tag "Docker" associé au cours "Introduction à la Data Science"
+
+(23, 5), -- Tag "Time Management" associé au cours "Développement Personnel : Gestion du Temps"
+(24, 5), -- Tag "Stress Management" associé au cours "Développement Personnel : Gestion du Temps"
+(25, 5); 
+
+
+
+
+select `Cours`.id, Cours.title , Cours.description , Cours.content  , Categories.name ,
+GROUP_CONCAT(`Tags`.title) as tags , GROUP_CONCAT(`Tags`.id) as Tags_id 
+from Cours inner join `Categories` on `Categories`.id = `Cours`.cat_id
+inner join `CoursTags` on Cours.id = `CoursTags`.cours_id
+inner join `Tags` on Tags.id = `CoursTags`.tag_id 
+where Cours.deleted_at is NULL 
+GROUP BY `Cours`.id, Cours.title , Cours.description , Cours.content , Categories.name  ;
+ 
+
+
+SHOW CREATE TABLE Cours;

@@ -80,7 +80,7 @@ use App\config\Connexion ;
             $stmt->execute();
             // i should return an user object but how ?
             return $this->con->lastInsertId();
-
+            
             
         } catch (PDOException $e) {
             echo "Error add user: " . $e->getMessage();

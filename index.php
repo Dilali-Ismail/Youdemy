@@ -11,16 +11,16 @@
   <!-- Navbar -->
   <nav class="bg-white shadow">
     <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-      <a href="#" class="text-2xl font-bold text-blue-600">Youdemy</a>
+      <a href="#" class="text-2xl font-bold text-purple-600">Youdemy</a>
       <div class="hidden md:flex items-center justify-center space-x-6 flex-grow">
-        <a href="#" class="text-gray-600 hover:text-blue-600">Home</a>
-        <a href="#" class="text-gray-600 hover:text-blue-600">Courses</a>
-        <a href="#" class="text-gray-600 hover:text-blue-600">About</a>
-        <a href="#" class="text-gray-600 hover:text-blue-600">Contact</a>
+        <a href="#" class="text-gray-600 hover:text-purple-600">Home</a>
+        <a href="#" class="text-gray-600 hover:text-purple-600">Courses</a>
+        <a href="#" class="text-gray-600 hover:text-purple-600">About</a>
+        <a href="#" class="text-gray-600 hover:text-purple-600">Contact</a>
       </div>
       <div class="hidden md:flex items-center space-x-4">
-        <a href="./src/view/auth/login.php" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Sign In</a>
-        <a href="./src/view/auth/registre.php" class="px-4 py-2 bg-gray-200 text-blue-600 rounded-md hover:bg-gray-300">Sign Up</a>
+        <a href="./src/view/auth/login.php" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">Sign In</a>
+        <a href="./src/view/auth/registre.php" class="px-4 py-2 bg-gray-200 text-purple-600 rounded-md hover:bg-gray-300">Sign Up</a>
       </div>
       <button class="md:hidden text-gray-600 focus:outline-none">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -31,11 +31,11 @@
   </nav>
 
   <!-- Hero Section -->
-  <section class="bg-blue-600 text-white">
+  <section class="bg-purple-600 text-white">
     <div class="container mx-auto px-6 py-16 text-center">
       <h1 class="text-4xl font-bold mb-4">Learn Anytime, Anywhere</h1>
       <p class="text-lg mb-6">Access thousands of courses taught by industry experts.</p>
-      <a href="#" class="px-6 py-3 bg-white text-blue-600 font-bold rounded-md hover:bg-gray-200">Explore Courses</a>
+      <a href="#" class="px-6 py-3 bg-white text-purple-600 font-bold rounded-md hover:bg-gray-200">Explore Courses</a>
     </div>
   </section>
 
@@ -48,7 +48,7 @@
         <div class="p-4">
           <h3 class="font-bold text-lg">Learn Python Programming</h3>
           <p class="text-gray-600">Master Python from scratch with hands-on projects.</p>
-          <a href="#" class="text-blue-600 hover:underline">View Course</a>
+          <a href="#" class="text-purple-600 hover:underline">View Course</a>
         </div>
       </div>
       <div class="bg-white shadow rounded-md overflow-hidden">
@@ -56,7 +56,7 @@
         <div class="p-4">
           <h3 class="font-bold text-lg">Graphic Design Essentials</h3>
           <p class="text-gray-600">Learn the principles of modern design and tools.</p>
-          <a href="#" class="text-blue-600 hover:underline">View Course</a>
+          <a href="#" class="text-purple-600 hover:underline">View Course</a>
         </div>
       </div>
       <div class="bg-white shadow rounded-md overflow-hidden">
@@ -64,7 +64,7 @@
         <div class="p-4">
           <h3 class="font-bold text-lg">Digital Marketing Mastery</h3>
           <p class="text-gray-600">Boost your marketing skills with real-world strategies.</p>
-          <a href="#" class="text-blue-600 hover:underline">View Course</a>
+          <a href="#" class="text-purple-600 hover:underline">View Course</a>
         </div>
       </div>
     </div>

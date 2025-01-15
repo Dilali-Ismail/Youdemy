@@ -18,7 +18,6 @@ if(isset($_POST['IdUserdelet'])){
 
 if(isset($_POST['IdUserSusp'])){
     $id = $_POST['IdUserSusp'];
-    $etat = $_POST['etatUser'];
     $User->susPUserC($id);
 
 }

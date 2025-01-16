@@ -32,7 +32,12 @@ if (isset($_POST['addCours']) && !empty($_POST['tags']) ){
   }
 }
 
+if(isset($_POST['deletCours'])){
 
+  $id =  $_POST['idcours'];
+  $delet =  $cours->deletCoursC($id);
+  
+}
 
 
 
@@ -103,7 +108,7 @@ $resultCours = $cours->getCours();
 
     <?php foreach ($resultCours as $SinglCours  => $value): ?>
     
-
+    <form action="" method="post">
     <div class="bg-white shadow rounded-lg p-4">
       <!-- Video Section -->
       <div class="mt-4">
@@ -118,6 +123,7 @@ $resultCours = $cours->getCours();
 
       <!-- Title -->
       <h3 class="text-lg font-bold mt-4 mb-2"><?=$value['title']?></h3>
+      <input type="text" hidden name="idcours" value="<?=$value['id'] ?>">
 
       <!-- Categories -->
       <p class="text-sm text-gray-600">Catégorie: <?=$value['name']?></p>
@@ -144,9 +150,10 @@ $resultCours = $cours->getCours();
           onclick="openEditModal('Introduction à JavaScript', 'Développement Web', ['Programmation', 'Frontend'], 'Ce cours fournit une introduction complète à JavaScript, couvrant les bases et les concepts avancés.', 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
           Modifier
         </button>
-        <button class="text-red-600 hover:underline">Supprimer</button>
+        <button class="text-red-600 hover:underline" name = "deletCours">Supprimer</button>
       </div>
     </div>
+     </form>
 
     <?php endforeach; ?>
 

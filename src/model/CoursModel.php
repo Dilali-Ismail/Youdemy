@@ -77,5 +77,23 @@ public function createCoursM($title, $description, $content,$categorie_id,$tags)
     }
 }
 
+
+public function deletCoursM($id){
+    try{
+
+        $query = "UPDATE Cours SET Cours.deleted_at = CURRENT_DATE  WHERE Cours.id = :id";
+        $stmt = $this->con->prepare($query);
+        $stmt->bindParam(':id',$id);
+        $stmt->execute();
+    
+    return $this->con->lastInsertId();
+    }
+    catch (PDOException $e) {
+        echo "Error deleting cours: " . $e->getMessage();
+        error_log("Error Deleting cours: " . $e->getMessage());
+        return false;
+    }
+}
+
 }
 ?>

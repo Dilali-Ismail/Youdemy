@@ -74,11 +74,9 @@ CREATE TABLE Inscription
     user_id INT ,
     cour_id INT ,
     created_at DATE NOT NULL ,
-    foreign key (user_id) REFERENCES User(id) ON UPDATE cascade
-    ON DELETE cascade ,
-    foreign key (cour_id) REFERENCES Cours(id) ON UPDATE cascade
-    ON DELETE cascade,
-    PRIMARY KEY (user_id , cour_id)
+    foreign key (user_id) REFERENCES User(id) ,
+    foreign key (cour_id) REFERENCES Cours(id) ,
+    PRIMARY KEY (user_id , cour_id) 
 );
 
 INSERT INTO Roles (name) VALUES 
@@ -225,14 +223,13 @@ INSERT INTO CoursTags (tag_id, cours_id) VALUES
 
 
 
-select `Cours`.id, Cours.title , Cours.description , Cours.content  , Categories.name ,
+select `Cours`.id, Cours.title , Cours.description , Cours.content  , Categories.name ,Categories.id as CategiId,
 GROUP_CONCAT(`Tags`.title) as tags , GROUP_CONCAT(`Tags`.id) as Tags_id 
 from Cours inner join `Categories` on `Categories`.id = `Cours`.cat_id
 inner join `CoursTags` on Cours.id = `CoursTags`.cours_id
 inner join `Tags` on Tags.id = `CoursTags`.tag_id 
 where Cours.deleted_at is NULL 
 GROUP BY `Cours`.id, Cours.title , Cours.description , Cours.content , Categories.name  ;
- 
 
 
 SHOW CREATE TABLE Cours;

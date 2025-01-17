@@ -5,29 +5,37 @@ use App\model\Tagmodel;
 class TagController
 {
   private $Tagmodel ;
+  public function __construct()
+  {
+    $this->Tagmodel = new Tagmodel();
+  }
    
 
     public function getTags(){
-      $this->Tagmodel = new Tagmodel();
-      $getAlltags = $this->Tagmodel->getTags();
+
+      $getAlltags = $this->Tagmodel->getAll();
       return  $getAlltags ;
+
     }
 
    public function createTagC($TagName){
-    $this->Tagmodel = new Tagmodel();
-    $Tag = $this->Tagmodel->createTagM($TagName);
+
+    $Tag = $this->Tagmodel-> create($TagName);
     return $Tag ;
+    
    }
 
    public function editTagC($TagName,$id){
-    $this->Tagmodel = new Tagmodel();
-    $update = $this->Tagmodel->editTagM($TagName,$id);
+
+    $update = $this->Tagmodel->edit($TagName,$id);
     return $update ;
+
    }
    public function deletTagC($id){
-    $this->Tagmodel = new Tagmodel();
-    $delet = $this->Tagmodel->deletTagM($id);
+
+    $delet = $this->Tagmodel->delete($id);
     return $delet ;
+
    }
 }
 ?>

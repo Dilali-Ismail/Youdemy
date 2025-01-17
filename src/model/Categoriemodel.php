@@ -1,20 +1,17 @@
 <?php
 namespace App\model;
-use App\config\Connexion ;
 use PDO ;
 use PDOException ;
 use App\class\categorie;
-class Categoriemodel{
-
-private $con ;
+class Categoriemodel extends BaseModel{
 
 
 public function __construct(){
- $this->con = Connexion::connection();
+ parent::__construct('Categories');
 }
 
-public function getCategorieM(){
-    $query = "SELECT Categories.id , Categories.name , Categories.created_at , Categories.updated_at from Categories where Categories.deleted_at IS NULL";
+public function getAll(){
+    $query = "SELECT Categories.id , Categories.name , Categories.created_at , Categories.updated_at from $this->table_name where Categories.deleted_at IS NULL";
     $stmt = $this->con->prepare($query);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -26,11 +23,11 @@ else{
 }
 }
 
-public function createCategorieM($CategorieName){
+public function create($args){
     try{
-        $query = "INSERT INTO Categories (name, created_at) VALUES ( :CategorieName , CURRENT_DATE) ";
+        $query = "INSERT INTO $this->table_name (name, created_at) VALUES ( :CategorieName , CURRENT_DATE) ";
         $stmt = $this->con->prepare($query);
-        $stmt->bindParam(':CategorieName',$CategorieName);
+        $stmt->bindParam(':CategorieName',$args);
         $stmt->execute();
 
      $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -46,14 +43,14 @@ public function createCategorieM($CategorieName){
     
     }
     
-    public function editCategorieM($CategorieName,$id){
+    public function edit($args,$id){
     
         try{
         
             $query = "UPDATE Categories SET Categories.name = :CategorieName , Categories.updated_at = CURRENT_DATE WHERE Categories.id = :id";
             $stmt = $this->con->prepare($query);
             $stmt->bindParam(':id',$id);
-            $stmt->bindParam(':CategorieName',$CategorieName);
+            $stmt->bindParam(':CategorieName',$args);
             $stmt->execute();
         
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -68,11 +65,11 @@ public function createCategorieM($CategorieName){
         
     }
     
-    public function deletCategorieM($id){
+    public function delete($id){
     
         try{
         
-            $query = "UPDATE Categories SET Categories.deleted_at = CURRENT_DATE  WHERE Categories.id = :id";
+            $query = "UPDATE $this->table_name SET Categories.deleted_at = CURRENT_DATE  WHERE Categories.id = :id";
             $stmt = $this->con->prepare($query);
             $stmt->bindParam(':id',$id);
             $stmt->execute();

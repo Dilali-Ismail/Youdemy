@@ -7,27 +7,36 @@ class CategorieController
 {
   private $Categoeriemodel ;
 
-    public function getCategorieC(){
+     public function __construct()
+     {
       $this->Categoeriemodel = new Categoriemodel();
-      $getAllcategories = $this->Categoeriemodel->getCategorieM();
+     }
+
+    public function getCategorieC(){
+    
+      $getAllcategories = $this->Categoeriemodel-> getAll();
       return  $getAllcategories ;
+
     }
 
    public function createCategorieC($CategorieName){
-    $this->Categoeriemodel = new Categoriemodel();
-    $creat = $this->Categoeriemodel ->createCategorieM($CategorieName);
+
+    $creat = $this->Categoeriemodel ->create($CategorieName);
     return $creat ;
+
    }
 
    public function editCategorieC($CategorieName,$id){
-    $this->Categoeriemodel = new Categoriemodel();
-    $update = $this->Categoeriemodel-> editCategorieM($CategorieName,$id);
+
+    $update = $this->Categoeriemodel->edit($CategorieName,$id);
     return $update ;
+
    }
    public function deletCategorieC($id){
-    $this->Categoeriemodel = new Categoriemodel();
-    $delet = $this->Categoeriemodel->deletCategorieM($id);
+
+    $delet = $this->Categoeriemodel->delete($id);
     return $delet ;
+    
    }
 }
 ?>

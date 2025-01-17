@@ -1,23 +1,20 @@
 <?php
 namespace App\model;
-use App\Config\Connexion ;
 use App\class\Tag;
 use PDO ;
 use PDOException ;
 
-class Tagmodel{
+class Tagmodel extends BaseModel{
 
-private $con ;
 
 
 public function __construct(){
-
-$this->con = Connexion::connection();
+    parent::__construct("Tags");
 
 }
 
-public function getTags(){
-    $query = "SELECT Tags.id , Tags.title , Tags.created_at , Tags.updated_at  from Tags where Tags.deleted_at IS NULL ORDER BY Tags.id DESC ";
+public function getAll(){
+    $query = "SELECT Tags.id , Tags.title , Tags.created_at , Tags.updated_at  from $this->table_name where Tags.deleted_at IS NULL ORDER BY Tags.id DESC ";
     $stmt = $this->con->prepare($query);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -29,14 +26,15 @@ else{
 }
 }
 
-public function createTagM($TagName){
+public function create($args){
  
 try{
-    $query = "INSERT INTO Tags (title, created_at) VALUES ( :TagName , CURRENT_DATE) ";
+    $query = "INSERT INTO $this->table_name (title, created_at) VALUES ( :TagName , CURRENT_DATE) ";
     $stmt = $this->con->prepare($query);
-    $stmt->bindParam(':TagName',$TagName);
+    $stmt->bindParam(':TagName',$args);
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if($row)
     return new Tag($row['id'],$row['title']);
 }
 catch (PDOException $e) {
@@ -47,14 +45,14 @@ catch (PDOException $e) {
 
 }
 
-public function editTagM($TagName,$id){
+public function edit($args,$id){
 
     try{
         
-        $query = "UPDATE Tags SET Tags.title = :TagName , Tags.updated_at = CURRENT_DATE WHERE Tags.id = :id";
+        $query = "UPDATE $this->table_name SET Tags.title = :TagName , Tags.updated_at = CURRENT_DATE WHERE Tags.id = :id";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(':id',$id);
-        $stmt->bindParam(':TagName',$TagName);
+        $stmt->bindParam(':TagName',$args);
         $stmt->execute();
        $row = $stmt->fetch(PDO::FETCH_ASSOC);
        if($row)
@@ -69,11 +67,11 @@ public function editTagM($TagName,$id){
     
 }
 
-public function deletTagM($id){
+public function delete($id){
 
     try{
     
-        $query = "UPDATE Tags SET Tags.deleted_at = CURRENT_DATE  WHERE Tags.id = :id";
+        $query = "UPDATE $this->table_name SET Tags.deleted_at = CURRENT_DATE  WHERE Tags.id = :id";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(':id',$id);
         $stmt->execute();

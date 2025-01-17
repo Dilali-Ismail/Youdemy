@@ -8,22 +8,21 @@ use PDO ;
 use PDOException ;
 
 
-class CoursModel{
-
-    private $con ;
+class CoursModel extends BaseModel{
 
 
 public function __construct(){
 
-$this->con = Connexion::connection();
+parent::__construct('Cours');
+
 }
 
 
-public function getCoursM(){
-    $query = "SELECT Cours.id, Cours.title , Cours.description , Cours.content , Categories.name ,
+public function getAll(){
+    $query = "SELECT Cours.id, Cours.title , Cours.description , Cours.content , Categories.name ,Categories.id as CategiId ,
               GROUP_CONCAT(Tags.title) as tags , GROUP_CONCAT(Tags.id) as Tags_id 
               from
-               Cours 
+               $this->table_name 
               inner join
                Categories on Categories.id = Cours.cat_id
               inner join
@@ -37,18 +36,26 @@ public function getCoursM(){
     $stmt = $this->con->prepare($query);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // $courses = [];
 if(!$result){
 return null ;
 }
 else{
     return $result ;
+    // foreach ($result as $row) {
+    //     $tags = explode(',', $row['tags']);
+    //     $categorie = new categorie($row['cat_id'], $row['name']); 
+    //     $courses[] = new Cours($row['id'], $row['title'], $row['description'], $row['content'], $tags, $categorie);
+    // }
+
+    // return $courses;
 }
 }
 
-public function createCoursM($title, $description, $content,$categorie_id,$tags) {
+public function create($title, $description ='', $content ='',$categorie_id ='',$tags = []) {
     try {
     
-        $query = "INSERT INTO Cours (title, description, content, cat_id ,isArchive, created_at , updated_at , deleted_at)
+        $query = "INSERT INTO $this->table_name (title, description, content, cat_id ,isArchive, created_at , updated_at , deleted_at)
                   VALUES (:title, :description, :content, :categorie_id,  NULL , CURRENT_DATE , NULL , NULL)";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(':title', $title);
@@ -57,7 +64,7 @@ public function createCoursM($title, $description, $content,$categorie_id,$tags)
         $stmt->bindParam(':categorie_id', $categorie_id);
        
         $stmt->execute();
-         //i should return an object cours 
+         
         $cours_id =  $this->con->lastInsertId();
 
         $querytags = "INSERT INTO CoursTags (tag_id, cours_id) Values(:tag_id,:cours_id)";
@@ -77,11 +84,47 @@ public function createCoursM($title, $description, $content,$categorie_id,$tags)
     }
 }
 
+public function edit($args, $id, $description = '', $content = '', $categorie_id = '', $tags = []) {
+    try {
+       
+        $query = "UPDATE $this->table_name  SET title = :title,  description = :description,  content = :content,  cat_id = :categorie_id, updated_at = CURRENT_DATE WHERE id = :id";
+        $stmt = $this->con->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':title', $args);
+        $stmt->bindParam(':description', $description);
+        $stmt->bindParam(':content', $content);
+        $stmt->bindParam(':categorie_id', $categorie_id);
+        $stmt->execute();
+      
+        $deleteTagsQuery = "DELETE FROM CoursTags WHERE cours_id = :id";
+        $deleteStmt = $this->con->prepare($deleteTagsQuery);
+        $deleteStmt->bindParam(':id', $id);
+        $deleteStmt->execute();
 
-public function deletCoursM($id){
+
+        $queryTags = "INSERT INTO CoursTags (tag_id, cours_id) VALUES (:tag_id, :cours_id)";
+        $tagStmt = $this->con->prepare($queryTags);
+
+        foreach ($tags as $tag) {
+            $tagStmt->bindParam(':cours_id', $id);
+            $tagStmt->bindParam(':tag_id', $tag);
+            $tagStmt->execute();
+        }
+
+        return true; 
+
+    } catch (PDOException $e) {
+        echo "Error updating cours: " . $e->getMessage();
+        error_log("Error updating cours: " . $e->getMessage());
+        return false;
+    }
+}
+
+
+public function delete($id){
     try{
 
-        $query = "UPDATE Cours SET Cours.deleted_at = CURRENT_DATE  WHERE Cours.id = :id";
+        $query = "UPDATE $this->table_name SET Cours.deleted_at = CURRENT_DATE  WHERE Cours.id = :id";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(':id',$id);
         $stmt->execute();

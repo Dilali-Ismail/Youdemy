@@ -5,17 +5,17 @@ use App\class\User;
 use App\model\Usermodel;
 class Authcontroller{
 
-//   private $usermodel ;
+  private $usermodel ;
 
-//   public function __construct()
-//   {
-//     $this->user = new Usermodel();
-//   }
+  public function __construct()
+  {
+    $this->usermodel = new Usermodel();
+  }
 
 
 public function login($email, $password) {
-    $usermodel = new Usermodel();
-    $result = $usermodel->findUserByEmailAndPassword($email, $password);
+   
+    $result = $this->usermodel->findUserByEmailAndPassword($email, $password);
 
     if ($result['status'] === "success") {
         $user = $result['user'];
@@ -40,8 +40,7 @@ public function login($email, $password) {
 
 
     public function createUser($name,$email,$password,$role){
-        $usermodel = new Usermodel();
-        $user = $usermodel->createUserM($name,$email,$password,$role);
+        $user = $this->usermodel->createUserM($name,$email,$password,$role);
         
         if($user){
             header("Location:../../view/auth/login.php");
@@ -50,25 +49,27 @@ public function login($email, $password) {
     }
 
       public function getUsers(){
-        $usermodel = new Usermodel();
-        $users = $usermodel->getAllusers();
+
+        $users = $this->usermodel->getAllusers();
         return $users  ;
+
       }
 
        public function activeUserC($id){
-        $usermodel = new Usermodel();
-        $userActive = $usermodel->activerUserM($id);
+
+        $userActive = $this->usermodel->activerUserM($id);
         return $userActive ;
        }
 
        public function deletUserC($id){
-        $usermodel = new Usermodel();
-        $userdelet = $usermodel->deletUserM($id);
+
+        $userdelet = $this->usermodel->deletUserM($id);
         return $userdelet ;
        }
+
        public function susPUserC($id){
-        $usermodel = new Usermodel();
-        $userdelet = $usermodel->susPUserM($id);
+
+        $userdelet = $this->usermodel->susPUserM($id);
         return $userdelet ;
        }
 }

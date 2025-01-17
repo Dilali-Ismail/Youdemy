@@ -33,12 +33,11 @@ class Connexion {
             error_log("Connection failed: " . $e->getMessage());
         }
     }
-        // Load environment variables
+       
        
     }
 }
 
-// End output buffering to ensure no output is sent before headers
 ob_end_flush();
 
 ?>

@@ -1,29 +1,39 @@
 <?php
 
 namespace App\Controller;
+
+use App\model\BaseModel;
 use App\model\CoursModel;
 
-class CoursController
+class CoursController 
 {
   private $Coursmodel ;
    
+  public function __construct(){
+    $this->Coursmodel = new CoursModel();
+  }
 
     public function getCours(){
-      $this->Coursmodel = new CoursModel();
-      $getAllcours = $this->Coursmodel->getCoursM();
+      $getAllcours = $this->Coursmodel->getAll();
       return  $getAllcours ;
     }
 
     public function createCoursC($title, $description, $content,$categorie_id,$tags){
-      $this->Coursmodel = new CoursModel();
-      $createCours = $this->Coursmodel->createCoursM($title, $description, $content,$categorie_id,$tags);
+
+      $createCours = $this->Coursmodel->create($title, $description, $content,$categorie_id,$tags);
       return  $createCours ;
     }
 
+    public function editCoursC( $id,$args, $description, $content,$categorie_id,$tags){
+
+      $editeCours = $this->Coursmodel->edit($args, $id, $description , $content , $categorie_id , $tags );
+      return  $editeCours ;
+    }
+
+
     public function deletCoursC($id){
-     
-      $this->Coursmodel = new CoursModel();
-      $deletCours =  $this->Coursmodel->deletCoursM($id);
+      
+      $deletCours =  $this->Coursmodel->delete($id);
       return $deletCours ;
       
   }

@@ -31,6 +31,27 @@ if (isset($_POST['addCours']) && !empty($_POST['tags']) ){
       echo "<p class='text-red-500'>Failed to create cours.</p>";
   }
 }
+if (isset($_POST['editCours'])  && !empty($_POST['ediTtags']) ){
+  $id =  $_POST['edit-id'];
+  $titleEdit = $_POST['edit-title'];
+  $descriptionEdit = $_POST['edit-description'];
+  $contentEdit = $_POST['edit-video'];
+  $categorie_idEdit = $_POST['edit-category'];
+  $newTags = $_POST['ediTtags']; 
+  
+  
+  
+ 
+  $result = $cours->editCoursC( $id,$titleEdit ,$descriptionEdit,$contentEdit,$categorie_idEdit,$newTags);
+
+  if ($result) {
+    header("Location:./ensignant.php");
+    exit();
+  } else {
+      echo "<p class='text-red-500'>Failed to edit cours.</p>";
+  }
+  
+}
 
 if(isset($_POST['deletCours'])){
 
@@ -39,19 +60,10 @@ if(isset($_POST['deletCours'])){
   
 }
 
-
-
-
-
-
-
-
-
-
-
 $resultCours = $cours->getCours();
-
-
+// echo '<pre>';
+// print_r($resultCours);
+// echo '</pre>';
 
 ?>
 
@@ -105,7 +117,7 @@ $resultCours = $cours->getCours();
   <h2 class="text-2xl font-semibold mb-6 text-gray-800">Mes Cours</h2>
   <div id="courses-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <!-- Example Course Card -->
-
+ <!-- Card______________________________________________________________________ -->
     <?php foreach ($resultCours as $SinglCours  => $value): ?>
     
     <form action="" method="post">
@@ -133,9 +145,7 @@ $resultCours = $cours->getCours();
       <?php 
        $tagscours = explode(',', $value['tags']);
        foreach ($tagscours as $tag): ?>
-
-      <p class="text-sm text-gray-600 border border-purple-500 px-2 py-1 rounded"><?= htmlspecialchars($tag) ?></p>
-
+          <p class="text-sm text-gray-600 border border-purple-500 px-2 py-1 rounded"><?= htmlspecialchars($tag) ?></p>
       <?php endforeach; ?>
       </div>
       <!-- Description -->
@@ -146,8 +156,9 @@ $resultCours = $cours->getCours();
       <!-- Buttons -->
       <div class="mt-4 flex space-x-4">
         <button 
+          type="button"
           class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700"
-          onclick="openEditModal('Introduction à JavaScript', 'Développement Web', ['Programmation', 'Frontend'], 'Ce cours fournit une introduction complète à JavaScript, couvrant les bases et les concepts avancés.', 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
+          onclick="openEditModal( <?=$value['id'] ?> ,'<?=$value['title']?>', <?=$value['CategiId']?> , '<?=$value['Tags_id']?>' , '<?=$value['description']?>', '<?=$value['content']?>')">
           Modifier
         </button>
         <button class="text-red-600 hover:underline" name = "deletCours">Supprimer</button>
@@ -157,18 +168,17 @@ $resultCours = $cours->getCours();
 
     <?php endforeach; ?>
 
-
-
-
+    <!-- Card______________________________________________________________________ -->
+    
   </div>
 </section>
 
 
-<!-- Edit Modal -->
-<div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+<!-- Edit Modal----------------------------------------------------------------------------- -->
+<div id="edit-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center ">
   <div class="bg-white p-6 rounded-lg shadow-lg w-1/2">
     <h2 class="text-xl font-bold mb-4">Modifier le Cours</h2>
-    <form id="edit-form">
+    <form id="edit-form" method="post">
       <!-- Video URL -->
       <div class="mb-4">
         <label for="edit-video" class="block text-sm font-medium text-gray-700">Vidéo URL</label>
@@ -179,6 +189,7 @@ $resultCours = $cours->getCours();
       <!-- Title -->
       <div class="mb-4">
         <label for="edit-title" class="block text-sm font-medium text-gray-700">Titre</label>
+        <input type="text" hidden id="edit-id" name="edit-id">
         <input type="text" id="edit-title" name="edit-title" 
           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500">
       </div>
@@ -186,17 +197,24 @@ $resultCours = $cours->getCours();
       <!-- Category -->
       <div class="mb-4">
         <label for="edit-category" class="block text-sm font-medium text-gray-700">Catégorie</label>
-        <input type="text" id="edit-category" name="edit-category" 
-          class="w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500">
+           <select name="edit-category" id="edit-category" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500">
+              <?php foreach ($resultCategories  as $categorie => $value ) :?>
+                <option value="<?=$value['id'] ?>"><?=$value['name'] ?></option>
+             <?php endforeach ;?>
+           </select>
+        
       </div>
 
       <!-- Tags -->
+                
       <div class="mb-4">
         <label for="edit-tags" class="block text-sm font-medium text-gray-700">Tags</label>
-        <input type="text" id="edit-tags" name="edit-tags" 
-          class="w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500">
+        <select id="edit-tags" name="ediTtags[]" class="js-example-basic-multiple js-example-responsive " style="width: 75%" name="tags[]" multiple="multiple">
+            <?php foreach ($resultTags  as $tag => $value ) :?>
+                <option value="<?=$value['id'] ?>"><?=$value['title']?></option>
+             <?php endforeach ;?> 
+        </select>
       </div>
-
       <!-- Description -->
       <div class="mb-4">
         <label for="edit-description" class="block text-sm font-medium text-gray-700">Description</label>
@@ -209,7 +227,7 @@ $resultCours = $cours->getCours();
         <button type="button" onclick="closeEditModal()" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600">
           Annuler
         </button>
-        <button type="submit" name ="" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
+        <button type="submit" name ="editCours" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
           Enregistrer
         </button>
       </div>
@@ -217,6 +235,7 @@ $resultCours = $cours->getCours();
   </div>
 </div>
 
+<!-- --------------------------------------------------------------------------------------- -->
 
     <!-- Statistics Section -->
     <section class="mt-12">
@@ -246,6 +265,7 @@ $resultCours = $cours->getCours();
   </footer>
 
   <!-- div formular -->
+   <!-- div formular______________________________________________________________________ -->
   <div id="create-course-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
       <h2 class="text-2xl font-semibold mb-6 text-gray-800">Ajouter un nouveau cours</h2>
@@ -305,9 +325,10 @@ $resultCours = $cours->getCours();
       </form>
     </div>
   </div>
-
+<!-- div formular______________________________________________________________________ -->
   <!-- JavaScript -->
   <script>
+
     // Modal Logic
     const createModal = document.getElementById('create-course-modal');
 
@@ -326,13 +347,24 @@ $resultCours = $cours->getCours();
   </script>
   <script>
   // Function to open the edit modal
-  function openEditModal(title, category, tags, description, videoUrl) {
+  function openEditModal(id,title, category, tags, description, videoUrl) {
+    document.getElementById('edit-id').value = id;
     document.getElementById('edit-title').value = title;
     document.getElementById('edit-category').value = category;
-    document.getElementById('edit-tags').value = tags.join(', ');
+    // document.getElementById('edit-tags').value = tags;
     document.getElementById('edit-description').value = description;
     document.getElementById('edit-video').value = videoUrl;
     document.getElementById('edit-modal').classList.remove('hidden');
+
+    var selectElement = document.getElementById('edit-tags');
+    // Initialize the Select2 plugin
+    $(selectElement).select2();
+    console.log({tags: tags})
+    var valuesArray = tags.split(',');
+    // Set the default selected options (e.g., values 2 and 3)
+    selectElement.value = "2"; // This will select option 2
+    $(selectElement).val(valuesArray).trigger('change'); // Select options 2 and 3 by default
+
   }
 
   // Function to close the edit modal

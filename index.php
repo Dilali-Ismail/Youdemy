@@ -30,41 +30,58 @@
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="bg-purple-600 text-white">
-    <div class="container mx-auto px-6 py-16 text-center">
-      <h1 class="text-4xl font-bold mb-4">Learn Anytime, Anywhere</h1>
-      <p class="text-lg mb-6">Access thousands of courses taught by industry experts.</p>
-      <a href="#" class="px-6 py-3 bg-white text-purple-600 font-bold rounded-md hover:bg-gray-200">Explore Courses</a>
+  <!-- Search Bar -->
+  <section class="bg-purple-600 py-8">
+    <div class="container mx-auto px-6 text-center">
+      <h1 class="text-3xl font-bold text-white mb-4">Find Your Perfect Course</h1>
+      <div class="flex justify-center">
+        <input 
+          type="text" 
+          placeholder="Search for courses..." 
+          class="w-full max-w-lg px-4 py-2 rounded-l-md focus:outline-none"
+        />
+        <button class="bg-white text-purple-600 px-6 py-2 rounded-r-md font-bold hover:bg-gray-200">Search</button>
+      </div>
     </div>
   </section>
 
-  <!-- Featured Courses -->
+  <!-- Courses Section -->
   <section class="container mx-auto px-6 py-16">
-    <h2 class="text-3xl font-bold text-center mb-8">Popular Courses</h2>
+    <h2 class="text-3xl font-bold text-center mb-8">Available Courses</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Course Card -->
       <div class="bg-white shadow rounded-md overflow-hidden">
         <img src="https://via.placeholder.com/400x200" alt="Course Image" class="w-full h-48 object-cover">
         <div class="p-4">
           <h3 class="font-bold text-lg">Learn Python Programming</h3>
-          <p class="text-gray-600">Master Python from scratch with hands-on projects.</p>
-          <a href="#" class="text-purple-600 hover:underline">View Course</a>
+          <p class="text-gray-600 mb-2">Master Python from scratch with hands-on projects.</p>
+          <p class="text-sm text-gray-500"><span class="font-bold">Instructor:</span> John Doe</p>
+          <p class="text-sm text-gray-500"><span class="font-bold">Category:</span> Programming</p>
+          <p class="text-sm text-gray-500"><span class="font-bold">Tags:</span> #Python #Coding</p>
+          <button class="w-full mt-4 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Enroll Now</button>
         </div>
       </div>
+      <!-- Repeat this card for more courses -->
       <div class="bg-white shadow rounded-md overflow-hidden">
         <img src="https://via.placeholder.com/400x200" alt="Course Image" class="w-full h-48 object-cover">
         <div class="p-4">
           <h3 class="font-bold text-lg">Graphic Design Essentials</h3>
-          <p class="text-gray-600">Learn the principles of modern design and tools.</p>
-          <a href="#" class="text-purple-600 hover:underline">View Course</a>
+          <p class="text-gray-600 mb-2">Learn the principles of modern design and tools.</p>
+          <p class="text-sm text-gray-500"><span class="font-bold">Instructor:</span> Jane Smith</p>
+          <p class="text-sm text-gray-500"><span class="font-bold">Category:</span> Design</p>
+          <p class="text-sm text-gray-500"><span class="font-bold">Tags:</span> #Design #Creativity</p>
+          <button class="w-full mt-4 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Enroll Now</button>
         </div>
       </div>
       <div class="bg-white shadow rounded-md overflow-hidden">
         <img src="https://via.placeholder.com/400x200" alt="Course Image" class="w-full h-48 object-cover">
         <div class="p-4">
           <h3 class="font-bold text-lg">Digital Marketing Mastery</h3>
-          <p class="text-gray-600">Boost your marketing skills with real-world strategies.</p>
-          <a href="#" class="text-purple-600 hover:underline">View Course</a>
+          <p class="text-gray-600 mb-2">Boost your marketing skills with real-world strategies.</p>
+          <p class="text-sm text-gray-500"><span class="font-bold">Instructor:</span> Mike Brown</p>
+          <p class="text-sm text-gray-500"><span class="font-bold">Category:</span> Marketing</p>
+          <p class="text-sm text-gray-500"><span class="font-bold">Tags:</span> #Marketing #Strategy</p>
+          <button class="w-full mt-4 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Enroll Now</button>
         </div>
       </div>
     </div>
@@ -76,5 +93,6 @@
       <p>© 2025 Youdemy. All Rights Reserved.</p>
     </div>
   </footer>
+  
 </body>
 </html>

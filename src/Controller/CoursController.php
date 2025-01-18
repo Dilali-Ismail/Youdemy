@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Controller;
-
-use App\model\BaseModel;
 use App\model\CoursModel;
 
 class CoursController 
@@ -37,8 +35,27 @@ class CoursController
       return $deletCours ;
       
   }
+   
+  public function getCoursByAuthor($Author){
+    $getAllcoursByAuth = $this->Coursmodel->getAllBYAuthor($Author);
+    return  $getAllcoursByAuth ;
+  }
 
+  public function inscriptionCours($UserId){
+    $CoursInscription = $this->Coursmodel->inscriptionCours($UserId);
+    return  $CoursInscription ;
+  }
+  
+  
+  public function Inscripter($userId,$CoursId){
+  $Inscripter =  $this->Coursmodel->Inscripter($userId,$CoursId);
+  return $Inscripter ;
+  }
 
+  public function InscripterOff($CoursId){
+    $Inscripter =  $this->Coursmodel->InscripterOff($CoursId);
+    return $Inscripter ;
+    }
 }
 
 

@@ -223,13 +223,29 @@ INSERT INTO CoursTags (tag_id, cours_id) VALUES
 
 
 
-select `Cours`.id, Cours.title , Cours.description , Cours.content  , Categories.name ,Categories.id as CategiId,
+
+select `Cours`.id, Cours.title , Cours.description , Cours.content, Cours.author , Categories.name ,Categories.id as CategiId,
 GROUP_CONCAT(`Tags`.title) as tags , GROUP_CONCAT(`Tags`.id) as Tags_id 
-from Cours inner join `Categories` on `Categories`.id = `Cours`.cat_id
+from Cours inner join `Categories` on `Categories`.id = `Cours`.cat_id 
 inner join `CoursTags` on Cours.id = `CoursTags`.cours_id
+inner join `User` on User.id = Cours.author
 inner join `Tags` on Tags.id = `CoursTags`.tag_id 
 where Cours.deleted_at is NULL 
 GROUP BY `Cours`.id, Cours.title , Cours.description , Cours.content , Categories.name  ;
 
+select * from `Inscription` ;
 
-SHOW CREATE TABLE Cours;
+Insert Into `Inscription`(user_id,cour_id,created_at) VALUES (4,3,CURRENT_DATE);
+
+Alter Table `Cours` add column author int ;
+
+select `Cours`.id, Cours.title , Cours.description , Cours.content, Cours.author , Categories.name , User.name as Auth ,Categories.id as CategiId 
+from Cours
+inner join `Inscription` on `Inscription`.cour_id = `Cours`.id
+inner join `Categories` on `Categories`.id = `Cours`.cat_id 
+inner join `User` on User.id = Cours.author 
+where Cours.deleted_at is NULL and user_id = 4
+GROUP BY `Cours`.id, Cours.title , Cours.description , Cours.content , Categories.name  ;
+
+
+delete from `Inscription` where `Inscription`.cour_id = 2 ;

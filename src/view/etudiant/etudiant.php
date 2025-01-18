@@ -1,3 +1,35 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id']) || strcmp($_SESSION['user_role'], "Etudiant")!= 0) {
+    header("Location:../auth/login.php"); 
+    exit();
+}
+require_once '../../../vendor/autoload.php';
+use App\Controller\CoursController;
+$cours = new CoursController();
+$resultCours = $cours->inscriptionCours($_SESSION['user_id']);
+if(isset($_POST['detacher'])){
+  
+  $coursID = $_POST['idcours'] ;
+  $cours->InscripterOff($coursID);
+  header("Location:./etudiant.php");
+}
+
+if (isset($_POST['deconnecter'])) {
+
+  session_unset();  
+  session_destroy(); 
+  header("Location:../auth/login.php"); 
+  exit();
+}
+
+?>
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,14 +45,16 @@
 
   <!-- Navbar -->
   <nav class="bg-white shadow">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <a href="#" class="text-2xl font-bold text-purple-600">EduPlatform</a>
-        <div class="flex items-center space-x-4">
-          <a href="#" class="text-gray-600 hover:text-purple-600">Accueil</a>
-          <a href="#" class="text-gray-600 hover:text-purple-600">Mon Compte</a>
-          <a href="#" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">Déconnexion</a>
-        </div>
+    <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+      <a href="../../../index.php" class="text-2xl font-bold text-purple-600">Youdemy</a>
+      <div class="hidden md:flex items-center justify-center space-x-6 flex-grow">
+        <a href="../../../index.php" class="text-gray-600 hover:text-purple-600">Accuille</a>
+        <a href="#" class="text-gray-600 hover:text-purple-600">Mes Cours</a>
+      </div>
+      <div class="hidden md:flex items-center space-x-4">
+        <form action="" method="post">
+          <button type="submit" name="deconnecter" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">Déconnexion</button>
+        </form>
       </div>
     </div>
   </nav>
@@ -38,15 +72,18 @@
 
     <!-- Courses List -->
     <section>
+    <h1 class="text-2xl font-semibold mb-6 text-gray-800">Bonjour Mr <?= $_SESSION['user_name']?> </h1>
       <h2 class="text-2xl font-semibold mb-6 text-gray-800">Mes Cours</h2>
       <div id="courses-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Example Course Card -->
+        <?php foreach ($resultCours as $SinglCours  => $value): ?>
+          <form action="" method="post">
         <div class="bg-white shadow rounded-lg p-4">
           <!-- Video Section -->
           <div class="mt-4">
             <iframe 
               class="w-full h-64 rounded-md border border-gray-300"
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+              src="<?=$value['content']?>" 
               title="Vidéo ajoutée"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen>
@@ -54,75 +91,33 @@
           </div>
 
           <!-- Title -->
-          <h3 class="text-lg font-bold mt-4 mb-2">Introduction à PHP</h3>
+          <h3 class="text-lg font-bold mt-4 mb-2"><?=$value['title']?></h3>
+          <input type="text" hidden name="idcours" value="<?=$value['id'] ?>">
 
           <!-- Enseignant -->
-          <p class="text-sm text-gray-600">Enseignant: John Doe</p> <!-- Nom de l'enseignant -->
+          <p class="text-sm text-gray-600">Ensigant:<?= ' '.$value['Auth']?></p> 
 
           <!-- Categories -->
-          <p class="text-sm text-gray-600">Catégorie: Développement Web</p>
-
-          <!-- Tags -->
-          <div class="flex flex-wrap gap-2">
-            <p class="text-sm text-gray-600 border border-purple-500 px-2 py-1 rounded">PHP</p>
-            <p class="text-sm text-gray-600 border border-purple-500 px-2 py-1 rounded">Backend</p>
-          </div>
+          <p class="text-sm text-gray-600">Catégorie: <?=$value['name']?></p>
 
           <!-- Description -->
           <p class="text-sm text-gray-600 mt-4">
-            Ce cours vous introduit aux concepts fondamentaux de PHP pour le développement backend.
+          <?=$value['description']?>
           </p>
 
           <!-- Buttons -->
           <div class="mt-4 flex space-x-4">
             <button 
-              type="button"
-              class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700"
-              onclick="openEditModal('Introduction à PHP', 'Développement Web', ['PHP', 'Backend'], 'Ce cours vous introduit aux concepts fondamentaux de PHP pour le développement backend.', 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-              Modifier
+              type="submit"
+              name="detacher"
+              class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
+              detacher
             </button>
-            <button class="text-red-600 hover:underline" name="deletCours">Supprimer</button>
           </div>
         </div>
-
-        <!-- Another Example Course Card -->
-        <div class="bg-white shadow rounded-lg p-4">
-          <div class="mt-4">
-            <iframe 
-              class="w-full h-64 rounded-md border border-gray-300"
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-              title="Vidéo ajoutée"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen>
-            </iframe>
-          </div>
-
-          <h3 class="text-lg font-bold mt-4 mb-2">Apprendre JavaScript</h3>
-
-          <!-- Enseignant -->
-          <p class="text-sm text-gray-600">Enseignant: Jane Smith</p> <!-- Nom de l'enseignant -->
-
-          <p class="text-sm text-gray-600">Catégorie: Développement Frontend</p>
-
-          <div class="flex flex-wrap gap-2">
-            <p class="text-sm text-gray-600 border border-purple-500 px-2 py-1 rounded">JavaScript</p>
-            <p class="text-sm text-gray-600 border border-purple-500 px-2 py-1 rounded">Frontend</p>
-          </div>
-
-          <p class="text-sm text-gray-600 mt-4">
-            Ce cours vous enseigne les bases du JavaScript pour créer des applications frontend dynamiques.
-          </p>
-
-          <div class="mt-4 flex space-x-4">
-            <button 
-              type="button"
-              class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700"
-              onclick="openEditModal('Apprendre JavaScript', 'Développement Frontend', ['JavaScript', 'Frontend'], 'Ce cours vous enseigne les bases du JavaScript pour créer des applications frontend dynamiques.', 'https://www.youtube.com/embed/dQw4w9WgXcQ')">
-              Modifier
-            </button>
-            <button class="text-red-600 hover:underline" name="deletCours">Supprimer</button>
-          </div>
-        </div>
+        </form>
+        <?php endforeach; ?>
+       
       </div>
     </section>
 

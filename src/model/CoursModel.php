@@ -19,12 +19,14 @@ parent::__construct('Cours');
 
 
 public function getAll(){
-    $query = "SELECT Cours.id, Cours.title , Cours.description , Cours.content , Categories.name ,Categories.id as CategiId ,
+    $query = "SELECT Cours.id, Cours.title , Cours.description , Cours.content ,User.name as author , Categories.name ,Categories.id as CategiId ,
               GROUP_CONCAT(Tags.title) as tags , GROUP_CONCAT(Tags.id) as Tags_id 
               from
                $this->table_name 
               inner join
                Categories on Categories.id = Cours.cat_id
+                inner join
+               User on User.id = Cours.author
               inner join
                CoursTags on Cours.id = CoursTags.cours_id
               inner join
@@ -136,6 +138,107 @@ public function delete($id){
         error_log("Error Deleting cours: " . $e->getMessage());
         return false;
     }
+}
+
+public function getAllBYAuthor($Author){
+    $query = "SELECT Cours.id, Cours.title , Cours.description , Cours.content ,Cours.author , Categories.name ,Categories.id as CategiId ,
+              GROUP_CONCAT(Tags.title) as tags , GROUP_CONCAT(Tags.id) as Tags_id 
+              from
+               $this->table_name 
+              inner join
+               Categories on Categories.id = Cours.cat_id
+                inner join
+               User on User.id = Cours.author 
+              inner join
+               CoursTags on Cours.id = CoursTags.cours_id 
+              inner join
+               Tags on Tags.id = CoursTags.tag_id 
+              where
+              Cours.author = $Author and Cours.deleted_at is NULL 
+              GROUP BY Cours.id, Cours.title , Cours.description , Cours.content , Categories.name ";
+
+    $stmt = $this->con->prepare($query);
+    $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // $courses = [];
+if(!$result){
+return null ;
+}
+else{
+    return $result ;
+    // foreach ($result as $row) {
+    //     $tags = explode(',', $row['tags']);
+    //     $categorie = new categorie($row['cat_id'], $row['name']); 
+    //     $courses[] = new Cours($row['id'], $row['title'], $row['description'], $row['content'], $tags, $categorie);
+    // }
+
+    // return $courses;
+}
+}
+
+public function inscriptionCours($UserId){
+    
+    $query = "SELECT Cours.id, Cours.title , Cours.description , Cours.content, Cours.author ,User.name as Auth, Categories.name ,Categories.id as CategiId 
+              from Cours
+              inner join Inscription on Inscription.cour_id = Cours.id
+              inner join Categories on Categories.id = Cours.cat_id 
+              inner join User on User.id = Cours.author 
+              where Cours.deleted_at is NULL and user_id = $UserId
+              GROUP BY Cours.id, Cours.title , Cours.description , Cours.content , Categories.name ";
+
+  $stmt = $this->con->prepare($query);
+  $stmt->execute();
+  $result = $stmt->fetchAll(PDO::FETCH_ASSOC); 
+  if(!$result){
+    return null ;
+    }
+    else{
+        return $result ;
+        // foreach ($result as $row) {
+        //     $tags = explode(',', $row['tags']);
+        //     $categorie = new categorie($row['cat_id'], $row['name']); 
+        //     $courses[] = new Cours($row['id'], $row['title'], $row['description'], $row['content'], $tags, $categorie);
+        // }
+    
+        // return $courses;
+    }
+}
+
+public function Inscripter($userId,$CoursId){
+    try{
+        $query ="INSERT Into Inscription (user_id,cour_id,created_at) VALUES (:UserID,:CoursID,CURRENT_DATE)";
+        $stmt = $this->con->prepare($query);
+        $stmt->bindParam(':UserID', $userId);
+        $stmt->bindParam(':CoursID', $CoursId);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if($row)
+        return $row;
+    }
+   catch (PDOException $e) {
+
+        error_log("Error Inscription: " . $e->getMessage());
+        return false;
+    }
+
+}
+
+public function InscripterOff($CoursId){
+    try{
+        $query ="delete from Inscription where Inscription.cour_id = :CoursID ";
+        $stmt = $this->con->prepare($query);
+        $stmt->bindParam(':CoursID', $CoursId);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if($row)
+        return $row;
+    }
+   catch (PDOException $e) {
+
+        error_log("Error Inscription: " . $e->getMessage());
+        return false;
+    }
+
 }
 
 }

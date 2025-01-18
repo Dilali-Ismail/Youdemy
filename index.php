@@ -1,3 +1,21 @@
+<?php
+session_start();
+require_once './vendor/autoload.php';
+use App\Controller\CoursController;
+$cours = new CoursController();
+
+
+
+if(isset($_POST['Inscripter'])){
+  
+  $userID = $_SESSION['user_id'];
+  $coursID = $_POST['idcours'] ;
+  $cours->Inscripter($userID,$coursID);
+
+}
+$resultCours = $cours->getCours();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +29,7 @@
   <!-- Navbar -->
   <nav class="bg-white shadow">
     <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-      <a href="#" class="text-2xl font-bold text-purple-600">Youdemy</a>
+      <a href="#" class="text-2xl font-bold text-black">Udemy</a>
       <div class="hidden md:flex items-center justify-center space-x-6 flex-grow">
         <a href="#" class="text-gray-600 hover:text-purple-600">Home</a>
         <a href="#" class="text-gray-600 hover:text-purple-600">Courses</a>
@@ -50,40 +68,31 @@
     <h2 class="text-3xl font-bold text-center mb-8">Available Courses</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       <!-- Course Card -->
+      <?php foreach ($resultCours as $SinglCours  => $value): ?>
+       <form action="" method="post">
       <div class="bg-white shadow rounded-md overflow-hidden">
-        <img src="https://via.placeholder.com/400x200" alt="Course Image" class="w-full h-48 object-cover">
+        <img src="./public/img/udemy.png" alt="Course Image" class="w-full h-48 object-cover">
         <div class="p-4">
-          <h3 class="font-bold text-lg">Learn Python Programming</h3>
-          <p class="text-gray-600 mb-2">Master Python from scratch with hands-on projects.</p>
-          <p class="text-sm text-gray-500"><span class="font-bold">Instructor:</span> John Doe</p>
-          <p class="text-sm text-gray-500"><span class="font-bold">Category:</span> Programming</p>
-          <p class="text-sm text-gray-500"><span class="font-bold">Tags:</span> #Python #Coding</p>
-          <button class="w-full mt-4 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Enroll Now</button>
+          <input type="text" hidden name="idcours" value="<?=$value['id'] ?>">
+          <h3 class="font-bold text-lg"><?=$value['title']?></h3>
+          <p class="text-gray-600 mb-2"><?=$value['description']?></p>
+          <p class="text-sm text-gray-500"><span class="font-bold">Instructor: </span> <?= '' .$value['author']?> </p>
+          <p class="text-sm text-gray-500"><span class="font-bold">Category: </span> <?= '' .$value['name']?></p>
+       
+          <p class="text-sm text-gray-500"><span class="font-bold">Tags:</span>
+            <?php 
+            $tagscours = explode(',', $value['tags']);
+            foreach ($tagscours as $tag): ?>
+            #<?= htmlspecialchars($tag) ?>
+          <?php endforeach; ?>
+          </p>
+          <button type="submit" name="Inscripter" class="w-full mt-4 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Enroll Now</button>
         </div>
       </div>
-      <!-- Repeat this card for more courses -->
-      <div class="bg-white shadow rounded-md overflow-hidden">
-        <img src="https://via.placeholder.com/400x200" alt="Course Image" class="w-full h-48 object-cover">
-        <div class="p-4">
-          <h3 class="font-bold text-lg">Graphic Design Essentials</h3>
-          <p class="text-gray-600 mb-2">Learn the principles of modern design and tools.</p>
-          <p class="text-sm text-gray-500"><span class="font-bold">Instructor:</span> Jane Smith</p>
-          <p class="text-sm text-gray-500"><span class="font-bold">Category:</span> Design</p>
-          <p class="text-sm text-gray-500"><span class="font-bold">Tags:</span> #Design #Creativity</p>
-          <button class="w-full mt-4 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Enroll Now</button>
-        </div>
-      </div>
-      <div class="bg-white shadow rounded-md overflow-hidden">
-        <img src="https://via.placeholder.com/400x200" alt="Course Image" class="w-full h-48 object-cover">
-        <div class="p-4">
-          <h3 class="font-bold text-lg">Digital Marketing Mastery</h3>
-          <p class="text-gray-600 mb-2">Boost your marketing skills with real-world strategies.</p>
-          <p class="text-sm text-gray-500"><span class="font-bold">Instructor:</span> Mike Brown</p>
-          <p class="text-sm text-gray-500"><span class="font-bold">Category:</span> Marketing</p>
-          <p class="text-sm text-gray-500"><span class="font-bold">Tags:</span> #Marketing #Strategy</p>
-          <button class="w-full mt-4 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Enroll Now</button>
-        </div>
-      </div>
+      </form>
+
+      <?php endforeach; ?>
+
     </div>
   </section>
 

@@ -40,6 +40,7 @@ public function login($email, $password) {
 
 
     public function createUser($name,$email,$password,$role){
+        
         $user = $this->usermodel->createUserM($name,$email,$password,$role);
         
         if($user){

@@ -1,5 +1,9 @@
 <?php 
-
+session_start();
+if (!isset($_SESSION['user_id']) || strcmp($_SESSION['user_role'], "Enseignant")!= 0) {
+    header("Location:../../../auth/login.php"); 
+    exit();
+}
 require_once '../../../vendor/autoload.php';
 
 use App\Controller\CategorieController ;
@@ -14,6 +18,15 @@ $Categories = new CategorieController();
 $resultCategories = $Categories->getCategorieC();
 
 $cours = new CoursController();
+
+if (isset($_POST['deconnecter'])) {
+
+  session_unset();  
+  session_destroy(); 
+  header("Location:../auth/login.php"); 
+  exit();
+
+}
 
 if (isset($_POST['addCours']) && !empty($_POST['tags']) ){
   $title = $_POST['title'];
@@ -60,10 +73,15 @@ if(isset($_POST['deletCours'])){
   
 }
 
-$resultCours = $cours->getCours();
-// echo '<pre>';
-// print_r($resultCours);
-// echo '</pre>';
+$resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
+
+if(isset($_POST['Inscripter'])){
+  
+  $userID = $_SESSION['user_id'];
+  $coursID = $_POST['idcours'] ;
+  $cours->Inscripter($userID,$coursID);
+
+}
 
 ?>
 
@@ -81,15 +99,17 @@ $resultCours = $cours->getCours();
 <body class="bg-gray-50 min-h-screen">
 
   <!-- Navbar -->
-  <nav class="bg-white shadow">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <a href="#" class="text-2xl font-bold text-purple-600">EduPlatform</a>
-        <div class="flex items-center space-x-4">
-          <a href="#" class="text-gray-600 hover:text-purple-600">Accueil</a>
-          <a href="#" class="text-gray-600 hover:text-purple-600">Mon Compte</a>
-          <a href="#" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">Déconnexion</a>
-        </div>
+    <nav class="bg-white shadow">
+    <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+      <a href="../../../index.php" class="text-2xl font-bold text-purple-600">Youdemy</a>
+      <div class="hidden md:flex items-center justify-center space-x-6 flex-grow">
+        <a href="../../../index.php" class="text-gray-600 hover:text-purple-600">Accuille</a>
+        <a href="#" class="text-gray-600 hover:text-purple-600">Mes Cours</a>
+      </div>
+      <div class="hidden md:flex items-center space-x-4">
+        <form action="" method="post">
+          <button type="submit" name="deconnecter" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">Déconnexion</button>
+        </form>
       </div>
     </div>
   </nav>
@@ -114,6 +134,7 @@ $resultCours = $cours->getCours();
 
     <!-- Courses List -->
     <section>
+    <h2 class="text-2xl font-semibold mb-6 text-gray-800">Bonjour Mr <?= $_SESSION['user_name']?> </h2>
   <h2 class="text-2xl font-semibold mb-6 text-gray-800">Mes Cours</h2>
   <div id="courses-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <!-- Example Course Card -->
@@ -249,10 +270,7 @@ $resultCours = $cours->getCours();
           <h3 class="text-lg font-bold">Étudiants inscrits</h3>
           <p class="text-4xl font-semibold text-purple-600">120</p>
         </div>
-        <div class="bg-white shadow rounded-lg p-4">
-          <h3 class="text-lg font-bold">Cours en attente</h3>
-          <p class="text-4xl font-semibold text-purple-600">2</p>
-        </div>
+
       </div>
     </section>
   </main>

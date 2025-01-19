@@ -25,11 +25,6 @@ if (isset($_POST['deconnecter'])) {
 
 ?>
 
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,7 +44,7 @@ if (isset($_POST['deconnecter'])) {
       <a href="../../../index.php" class="text-2xl font-bold text-purple-600">Youdemy</a>
       <div class="hidden md:flex items-center justify-center space-x-6 flex-grow">
         <a href="../../../index.php" class="text-gray-600 hover:text-purple-600">Accuille</a>
-        <a href="#" class="text-gray-600 hover:text-purple-600">Mes Cours</a>
+        <a href="./etudiant.php" class="text-gray-600 hover:text-purple-600">Mes Cours</a>
       </div>
       <div class="hidden md:flex items-center space-x-4">
         <form action="" method="post">
@@ -111,7 +106,7 @@ if (isset($_POST['deconnecter'])) {
               type="submit"
               name="detacher"
               class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
-              detacher
+              unroll
             </button>
           </div>
         </div>

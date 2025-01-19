@@ -11,14 +11,26 @@ class CoursController
     $this->Coursmodel = new CoursModel();
   }
 
-    public function getCours(){
-      $getAllcours = $this->Coursmodel->getAll();
-      return  $getAllcours ;
-    }
+  public function getCours($page = 1, $limit = 6) {
+    $offset = ($page - 1) * $limit;
 
-    public function createCoursC($title, $description, $content,$categorie_id,$tags){
+    // Récupérer les cours pour la page
+    $cours = $this->Coursmodel->getAll($limit, $offset);
 
-      $createCours = $this->Coursmodel->create($title, $description, $content,$categorie_id,$tags);
+    // Récupérer le total des cours
+    $totalCourses = $this->Coursmodel->getTotalCourses();
+    $totalPages = ceil($totalCourses / $limit);
+
+    // Retourner les données
+    return [
+        'courses' => $cours,
+        'totalPages' => $totalPages
+    ];
+}
+
+    public function createCoursC($title, $description, $content,$categorie_id,$tags,$author){
+
+      $createCours = $this->Coursmodel->create($title, $description, $content,$categorie_id,$tags,$author);
       return  $createCours ;
     }
 
@@ -35,6 +47,9 @@ class CoursController
       return $deletCours ;
       
   }
+
+  
+
    
   public function getCoursByAuthor($Author){
     $getAllcoursByAuth = $this->Coursmodel->getAllBYAuthor($Author);
@@ -56,6 +71,11 @@ class CoursController
     $Inscripter =  $this->Coursmodel->InscripterOff($CoursId);
     return $Inscripter ;
     }
+
+  public function NbrCours($Author){
+    $Nbr =  $this->Coursmodel->NbrCours ($Author);
+    return $Nbr ;
+  }
 }
 
 

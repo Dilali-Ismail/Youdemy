@@ -248,4 +248,9 @@ where Cours.deleted_at is NULL and user_id = 4
 GROUP BY `Cours`.id, Cours.title , Cours.description , Cours.content , Categories.name  ;
 
 
-delete from `Inscription` where `Inscription`.cour_id = 2 ;
+select * from `Inscription`;
+
+
+select COUNT(*) from `Cours` where Cours.author = 14 and deleted_at is NULL ;
+
+SELECT COUNT(*) FROM Cours WHERE deleted_at IS NULL

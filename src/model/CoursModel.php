@@ -18,7 +18,7 @@ parent::__construct('Cours');
 }
 
 
-public function getAll(){
+public function getAll($limit ='', $offset =''){
     $query = "SELECT Cours.id, Cours.title , Cours.description , Cours.content ,User.name as author , Categories.name ,Categories.id as CategiId ,
               GROUP_CONCAT(Tags.title) as tags , GROUP_CONCAT(Tags.id) as Tags_id 
               from
@@ -33,9 +33,11 @@ public function getAll(){
                Tags on Tags.id = CoursTags.tag_id 
               where
                Cours.deleted_at is NULL 
-              GROUP BY Cours.id, Cours.title , Cours.description , Cours.content , Categories.name ";
+              GROUP BY Cours.id, Cours.title , Cours.description , Cours.content , Categories.name LIMIT :limit OFFSET :offset ";
 
     $stmt = $this->con->prepare($query);
+    $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     // $courses = [];
@@ -54,16 +56,17 @@ else{
 }
 }
 
-public function create($title, $description ='', $content ='',$categorie_id ='',$tags = []) {
+public function create($title, $description ='', $content ='',$categorie_id ='',$tags = [],$author='') {
     try {
     
-        $query = "INSERT INTO $this->table_name (title, description, content, cat_id ,isArchive, created_at , updated_at , deleted_at)
-                  VALUES (:title, :description, :content, :categorie_id,  NULL , CURRENT_DATE , NULL , NULL)";
+        $query = "INSERT INTO $this->table_name (title, description, content, cat_id ,isArchive, created_at , updated_at , deleted_at,Cours.author)
+                  VALUES (:title, :description, :content, :categorie_id,  NULL , CURRENT_DATE , NULL , NULL,:Author)";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(':title', $title);
         $stmt->bindParam(':description', $description);
         $stmt->bindParam(':content', $content); 
         $stmt->bindParam(':categorie_id', $categorie_id);
+        $stmt->bindParam(':Author', $author);
        
         $stmt->execute();
          
@@ -240,6 +243,52 @@ public function InscripterOff($CoursId){
     }
 
 }
+
+public function NbrCours ($Author){
+    try{
+         $query = "SELECT COUNT(*) as NbrCours from `Cours` where Cours.author = :AuthorID and deleted_at is NULL ";
+    $stmt = $this->con->prepare($query);
+    $stmt->bindParam(':AuthorID', $Author);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+   if($row)
+    return $row;
+    }
+
+    catch (PDOException $e) {
+
+        error_log("Error : " . $e->getMessage());
+        return false;
+    }
+
+}
+
+public function NbrInscription ($Author){
+    try{
+         $query = "SELECT COUNT(*) as NbrCours from `Cours` where Cours.author = :AuthorID and deleted_at is NULL ";
+    $stmt = $this->con->prepare($query);
+    $stmt->bindParam(':AuthorID', $Author);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+   if($row)
+    return $row;
+    }
+
+    catch (PDOException $e) {
+
+        error_log("Error : " . $e->getMessage());
+        return false;
+    }
+}
+
+public function getTotalCourses(){
+    $query = "SELECT COUNT(*) FROM Cours WHERE deleted_at IS NULL";
+    $stmt = $this->con->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchColumn();
+}
+
+
 
 }
 ?>

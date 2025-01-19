@@ -28,6 +28,7 @@ if (isset($_POST['deconnecter'])) {
 
 }
 
+
 if (isset($_POST['addCours']) && !empty($_POST['tags']) ){
   $title = $_POST['title'];
   $description = $_POST['description'];
@@ -35,7 +36,7 @@ if (isset($_POST['addCours']) && !empty($_POST['tags']) ){
   $categorie_id = $_POST['category'];
   $tags = $_POST['tags']; 
   
-  $result = $cours->createCoursC($title, $description, $content,$categorie_id,$tags);
+  $result = $cours->createCoursC($title, $description, $content,$categorie_id,$tags,$_SESSION['user_id']);
 
   if ($result) {
     header("Location:./ensignant.php");
@@ -73,15 +74,16 @@ if(isset($_POST['deletCours'])){
   
 }
 
+$NbrCours['NbrCours']=  0;
+
+if($cours->NbrCours($_SESSION['user_id'])){
+  $NbrCours = $cours->NbrCours($_SESSION['user_id']) ;
+}
+
+$NbrCours['NbrCours'];
+
 $resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
 
-if(isset($_POST['Inscripter'])){
-  
-  $userID = $_SESSION['user_id'];
-  $coursID = $_POST['idcours'] ;
-  $cours->Inscripter($userID,$coursID);
-
-}
 
 ?>
 
@@ -104,7 +106,7 @@ if(isset($_POST['Inscripter'])){
       <a href="../../../index.php" class="text-2xl font-bold text-purple-600">Youdemy</a>
       <div class="hidden md:flex items-center justify-center space-x-6 flex-grow">
         <a href="../../../index.php" class="text-gray-600 hover:text-purple-600">Accuille</a>
-        <a href="#" class="text-gray-600 hover:text-purple-600">Mes Cours</a>
+        <a href="./ensignant.php" class="text-gray-600 hover:text-purple-600">Mes Cours</a>
       </div>
       <div class="hidden md:flex items-center space-x-4">
         <form action="" method="post">
@@ -264,7 +266,7 @@ if(isset($_POST['Inscripter'])){
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="bg-white shadow rounded-lg p-4">
           <h3 class="text-lg font-bold">Nombre de cours</h3>
-          <p class="text-4xl font-semibold text-purple-600">5</p>
+          <p class="text-4xl font-semibold text-purple-600"> <?php echo  $NbrCours['NbrCours'] ?> </p>
         </div>
         <div class="bg-white shadow rounded-lg p-4">
           <h3 class="text-lg font-bold">Étudiants inscrits</h3>

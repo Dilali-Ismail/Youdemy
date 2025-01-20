@@ -2,15 +2,20 @@
 session_start();
 
 require_once './vendor/autoload.php';
-use App\Controller\CoursController;
+use App\Controller\CoursController; 
 
 $cours = new CoursController();
 
 // Gestion de l'inscription
 if(isset($_POST['Inscripter'])){
-    $userID = $_SESSION['user_id'];
+  if(isset( $_SESSION['user_id']) && strcmp($_SESSION['user_role'],'Etudiant')== 0){
+     $userID = $_SESSION['user_id'];
     $coursID = $_POST['idcours'];
     $cours->Inscripter($userID, $coursID);
+  }else{
+    header("Location:./src/view/auth/registre.php"); 
+  }
+   
 }
 
 // Gestion de la déconnexion
@@ -29,6 +34,12 @@ $limit = 6;
 $data = $cours->getCours($page, $limit);
 $courses = $data['courses'];
 $totalPages = $data['totalPages'];
+
+
+
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -74,7 +85,7 @@ $totalPages = $data['totalPages'];
     <div class="container mx-auto px-6 text-center">
       <h1 class="text-3xl font-bold text-white mb-4">Find Your Perfect Course</h1>
       <div class="flex justify-center">
-        <input type="text" placeholder="Search for courses..." class="w-full max-w-lg px-4 py-2 rounded-l-md focus:outline-none"/>
+      <input type="text" id="motCle" onkeyup="searchCourses()" placeholder="Search for courses..." class="w-full max-w-lg px-4 py-2 rounded-l-md focus:outline-none"/>
         <button class="bg-white text-purple-600 px-6 py-2 rounded-r-md font-bold hover:bg-gray-200">Search</button>
       </div>
     </div>
@@ -83,8 +94,9 @@ $totalPages = $data['totalPages'];
   <!-- Courses Section -->
   <section class="container mx-auto px-6 py-16">
     <h2 class="text-3xl font-bold text-center mb-8">Available Courses</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div id="courses-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       <!-- Loop through the courses -->
+       
       <?php foreach ($courses as $value): ?>
       <form action="" method="post">
         <div class="bg-white shadow rounded-md overflow-hidden">
@@ -113,7 +125,9 @@ $totalPages = $data['totalPages'];
     <div class="flex justify-center mt-8">
       <!-- Display page links -->
       <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-        <a href="?page=<?= $i ?>" class="page-link px-4 py-2 mx-1 bg-purple-600 text-white rounded-md hover:bg-purple-700" name = "page"><?= $i ?></a>
+        <a href="?page=<?= $i ?>" class="page-link px-4 py-2 mx-1 rounded-md <?= $i == $page ? 'bg-purple-700 text-white' : 'bg-purple-600 text-white hover:bg-purple-700' ?>">
+        <?= $i ?>
+        </a>
       <?php endfor; ?>
     </div>
   </section>
@@ -124,6 +138,47 @@ $totalPages = $data['totalPages'];
       <p>© 2025 Youdemy. All Rights Reserved.</p>
     </div>
   </footer>
+<script>
+    
+    const searchCourses = async () =>{
+     let keyword = document.getElementById('motCle').value ;
+     let response = await fetch(`http://localhost:85/search.php?search=${keyword }`)
+     let data = await response.json();
+     console.log(data);
 
+     if(data.length > 0){
+      console.log('3iw');
+       document.getElementById('courses-list').innerHTML = '';
+    data.forEach((item)=>{
+      console.log('jj');
+    let tags = item.tags.split(',') ;
+     document.getElementById('courses-list').innerHTML += 
+     `
+      <form action="" method="post">
+        <div class="bg-white shadow rounded-md overflow-hidden">
+          <img src="./public/img/udemy.png" alt="Course Image" class="w-full h-48 object-cover">
+          <div class="p-4">
+            <input type="text" hidden name="idcours" value="${item.id}">
+            <h3 class="font-bold text-lg">${item.title}</h3>
+            <p class="text-gray-600 mb-2">${item.description}</p>
+            <p class="text-sm text-gray-500"><span class="font-bold">Instructor:</span>${item.author}</p>
+            <p class="text-sm text-gray-500"><span class="font-bold">Category:</span>${item.name}</p>
+            <p class="text-sm text-gray-500"><span class="font-bold">Tags:</span>
+               ${tags.forEach((tag)=>{
+                    '#'.tag
+               })}
+            </p>
+            <button type="submit" name="Inscripter" class="w-full mt-4 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Enroll Now</button>
+          </div>
+        </div>
+      </form>
+     `
+    });
+
+     }
+    
+    }
+
+</script>
 </body>
 </html>

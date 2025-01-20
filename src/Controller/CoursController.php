@@ -11,7 +11,7 @@ class CoursController
     $this->Coursmodel = new CoursModel();
   }
 
-  public function getCours($page = 1, $limit = 6) {
+  public function getCours($page, $limit ) {
     $offset = ($page - 1) * $limit;
 
     // Récupérer les cours pour la page
@@ -23,9 +23,14 @@ class CoursController
 
     // Retourner les données
     return [
-        'courses' => $cours,
-        'totalPages' => $totalPages
+        'courses' => $cours,                 
+        'totalPages' => $totalPages     
     ];
+}
+
+public function searchtCours($search ) {
+ 
+   return $this->Coursmodel->search($search);
 }
 
     public function createCoursC($title, $description, $content,$categorie_id,$tags,$author){
@@ -75,6 +80,12 @@ class CoursController
   public function NbrCours($Author){
     $Nbr =  $this->Coursmodel->NbrCours ($Author);
     return $Nbr ;
+  }
+
+
+  public function TotalCours(){
+    $ToTalCours =  $this->Coursmodel->getTotalCourses();
+    return $ToTalCours ;
   }
 }
 

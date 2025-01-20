@@ -41,6 +41,7 @@ CREATE TABLE Tags
     deleted_at DATE NULL
 );
 
+
 CREATE TABLE CoursTags
 (
     id INT AUTO_INCREMENT ,
@@ -230,7 +231,7 @@ from Cours inner join `Categories` on `Categories`.id = `Cours`.cat_id
 inner join `CoursTags` on Cours.id = `CoursTags`.cours_id
 inner join `User` on User.id = Cours.author
 inner join `Tags` on Tags.id = `CoursTags`.tag_id 
-where Cours.deleted_at is NULL 
+where Cours.deleted_at is NULL and Cours.title LIKE '%Principes%' or Cours.description LIKE '%Principes%'
 GROUP BY `Cours`.id, Cours.title , Cours.description , Cours.content , Categories.name  ;
 
 select * from `Inscription` ;
@@ -254,3 +255,9 @@ select * from `Inscription`;
 select COUNT(*) from `Cours` where Cours.author = 14 and deleted_at is NULL ;
 
 SELECT COUNT(*) FROM Cours WHERE deleted_at IS NULL
+
+
+select * from `Cours` limit 6 OFFSET 1
+
+
+select COUNT(*) from `Cours`

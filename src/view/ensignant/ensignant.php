@@ -81,10 +81,7 @@ if($cours->NbrCours($_SESSION['user_id'])){
 }
 
 $NbrCours['NbrCours'];
-
 $resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
-
-
 ?>
 
 <!DOCTYPE html>
@@ -363,12 +360,12 @@ $resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
     // Initialize Select2
     $(document).ready(function () {
       $('.js-example-basic-multiple').select2();
-    });
-  </script>
+    });                                     
+  </script>          
   <script>
   // Function to open the edit modal
   function openEditModal(id,title, category, tags, description, videoUrl) {
-    document.getElementById('edit-id').value = id;
+    document.getElementById('edit-id').value = id;  
     document.getElementById('edit-title').value = title;
     document.getElementById('edit-category').value = category;
     // document.getElementById('edit-tags').value = tags;

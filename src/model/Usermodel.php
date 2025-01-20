@@ -24,7 +24,6 @@ use App\config\Connexion ;
      return null ;
      }
      else{
-        echo 'error from database';
          return $result ;
      }
 

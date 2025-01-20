@@ -29,8 +29,10 @@ public function getEmail(){
 public function getPassword(){
     return $this->password ;
 }
+
 public function getRole(){
     return $this->role ;
 }
+
 }
 ?>

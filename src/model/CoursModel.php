@@ -33,28 +33,28 @@ public function getAll($limit ='', $offset =''){
                Tags on Tags.id = CoursTags.tag_id 
               where
                Cours.deleted_at is NULL 
-              GROUP BY Cours.id, Cours.title , Cours.description , Cours.content , Categories.name LIMIT :limit OFFSET :offset ";
+               GROUP BY Cours.id, Cours.title, Cours.description, Cours.content, Categories.name 
+                      LIMIT :limit OFFSET :offset" ; 
+                $stmt = $this->con->prepare($query);  
+                $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+                $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+                $stmt->execute();
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    // $courses = [];
+                if(!$result){
+                return  [];
+                }
+                else{
+                            return $result ;
+                            // foreach ($result as $row) {
+                            //     $tags = explode(',', $row['tags']);
+                            //     $categorie = new categorie($row['cat_id'], $row['name']); 
+                            //     $courses[] = new Cours($row['id'], $row['title'], $row['description'], $row['content'], $tags, $categorie);
+                            // }
 
-    $stmt = $this->con->prepare($query);
-    $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-    $stmt->execute();
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    // $courses = [];
-if(!$result){
-return null ;
-}
-else{
-    return $result ;
-    // foreach ($result as $row) {
-    //     $tags = explode(',', $row['tags']);
-    //     $categorie = new categorie($row['cat_id'], $row['name']); 
-    //     $courses[] = new Cours($row['id'], $row['title'], $row['description'], $row['content'], $tags, $categorie);
-    // }
-
-    // return $courses;
-}
-}
+                            // return $courses;
+                        }
+            }
 
 public function create($title, $description ='', $content ='',$categorie_id ='',$tags = [],$author='') {
     try {
@@ -246,7 +246,7 @@ public function InscripterOff($CoursId){
 
 public function NbrCours ($Author){
     try{
-         $query = "SELECT COUNT(*) as NbrCours from `Cours` where Cours.author = :AuthorID and deleted_at is NULL ";
+    $query = "SELECT COUNT(*) as NbrCours from `Cours` where Cours.author = :AuthorID and deleted_at is NULL ";
     $stmt = $this->con->prepare($query);
     $stmt->bindParam(':AuthorID', $Author);
     $stmt->execute();
@@ -282,11 +282,69 @@ public function NbrInscription ($Author){
 }
 
 public function getTotalCourses(){
-    $query = "SELECT COUNT(*) FROM Cours WHERE deleted_at IS NULL";
-    $stmt = $this->con->prepare($query);
+    $query = "SELECT COUNT(*) FROM Cours WHERE deleted_at IS NULL ";
+     $stmt = $this->con->prepare($query);
     $stmt->execute();
     return $stmt->fetchColumn();
 }
+
+
+public function search($search){
+    $query = "SELECT Cours.id, Cours.title , Cours.description , Cours.content ,User.name as author , Categories.name ,Categories.id as CategiId ,
+              GROUP_CONCAT(Tags.title) as tags , GROUP_CONCAT(Tags.id) as Tags_id 
+              from
+               $this->table_name 
+              inner join
+               Categories on Categories.id = Cours.cat_id
+                inner join
+               User on User.id = Cours.author
+              inner join
+               CoursTags on Cours.id = CoursTags.cours_id
+              inner join
+               Tags on Tags.id = CoursTags.tag_id 
+              where
+               Cours.deleted_at is NULL AND Cours.title LIKE :search OR Cours.description LIKE  :search
+              GROUP BY Cours.id, Cours.title, Cours.description, Cours.content, Categories.name " ; 
+               
+    $stmt = $this->con->prepare($query);
+
+     if (!empty($search)) {
+                 $searchParam = "%$search%";
+                 $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
+            }
+    $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // $courses = [];
+if(!$result){
+  return  [];
+}
+else{
+    return json_encode($result);
+    // foreach ($result as $row) {
+    //     $tags = explode(',', $row['tags']);
+    //     $categorie = new categorie($row['cat_id'], $row['name']); 
+    //     $courses[] = new Cours($row['id'], $row['title'], $row['description'], $row['content'], $tags, $categorie);
+    // }
+
+    // return $courses;
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

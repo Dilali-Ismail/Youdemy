@@ -8,6 +8,7 @@ require_once '../../../vendor/autoload.php';
 use App\Controller\CoursController;
 $cours = new CoursController();
 $resultCours = $cours->inscriptionCours($_SESSION['user_id']);
+
 if(isset($_POST['detacher'])){
   
   $coursID = $_POST['idcours'] ;

@@ -4,9 +4,9 @@ use App\Controller\CoursController;
 $cours = new CoursController();
 
 $TotalCours = $cours->TotalCours();
-
-var_dump($TotalCours );
-
+$CourAvecPlusEtudiants = $cours->CourAvecPlusEtudiants();
+$RepartitionParCategorie = $cours->RepartitionParCategorie();
+$TopTroisEnsignants = $cours->TopTroisEnsignants();
 
 ?>
 
@@ -176,11 +176,11 @@ var_dump($TotalCours );
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                            Le cour  d' étudiants</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                                            <?=  $CourAvecPlusEtudiants['title'] ;?></div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"> <?=  $CourAvecPlusEtudiants['Users'] ;?></div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -195,15 +195,64 @@ var_dump($TotalCours );
                         <h4 class="h3 mb-0 text-gray-800 mt-5">Repartition par catégorie</h4>
                     </div>
 
+                    <div id="content-wrapper" class="container my-5 " >
+                    <table class="table table-bordered text-center shadow-sm">
+                    <thead class="table-primary  bg-gradient-primary text-white">
+                        <tr>
+                         <th>Catégorie</th>
+                         <th>Nombre de Cours</th>
+                       </tr>
+
+                   </thead>
+                  <tbody class="text-black">
+                 <?php foreach ( $RepartitionParCategorie as $value): ?>
+                    <tr>
+                        <td>  <?php echo $value['name'] ?></td>
+                        <td>  <?php echo $value['Courses'] ?></td>
+                    </tr>
+                 <?php endforeach; ?>
+            </tbody>
+        </table>
+       </div>
+       
+       <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h4 class="h3 mb-0 text-gray-800 mt-5">Top 3 enseignants
+                        ​</h4>
+                    </div>
+
+                    <div id="content-wrapper" class="container my-5 " >
+                    <table class="table table-bordered text-center shadow-sm">
+                    <thead class="table-primary  bg-gradient-primary text-white">
+                        <tr>
+                         <th>Ensignant</th>
+                         <th>Nombre de Cours</th>
+                       </tr>
+
+                   </thead>
+                  <tbody class="text-black">
+                 <?php foreach ($TopTroisEnsignants as $value): ?>
+                    <tr>
+                        <td>  <?php echo $value['name'] ?></td>
+                        <td>  <?php echo $value['Courses'] ?></td>
+                    </tr>
+                 <?php endforeach; ?>
+            </tbody>
+        </table>
+       </div>
+
+
+
+
                    
-    </div>
+       </div>
 
-
+     
+      
                   
 
                    
 
-                </div>
+      </div>
                 <!-- /.container-fluid -->
 
             </div>

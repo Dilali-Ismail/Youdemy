@@ -68,8 +68,6 @@ CREATE TABLE Cours
 );
 
 
-drop table `Cours`;
-
 CREATE TABLE Inscription
 (
     user_id INT ,
@@ -79,6 +77,18 @@ CREATE TABLE Inscription
     foreign key (cour_id) REFERENCES Cours(id) ,
     PRIMARY KEY (user_id , cour_id) 
 );
+
+
+CREATE TRIGGER set_isActive_before_insert
+BEFORE INSERT ON User
+FOR EACH ROW
+BEGIN
+    IF NEW.role_id = 2 THEN
+        SET NEW.isActive = FALSE;
+    ELSE
+        SET NEW.isActive = TRUE;
+    END IF;
+END
 
 INSERT INTO Roles (name) VALUES 
 ('Etudiant'), 
@@ -93,77 +103,92 @@ INSERT INTO User (role_id, name, email, password, photo, isActive, suspended , d
 (2, 'David Simon', 'david.simon@example.com', 'password123', 'david.jpg', TRUE, NULL),
 (3, 'ismail dilali', 'ismail@gmail.com', '1234', 'david.jpg', TRUE, NULL);
 
+INSERT INTO Categories (name, created_at) VALUES 
+('Photography', CURDATE()),
+('Music', CURDATE()),
+('Art & Creativity', CURDATE()),
+('Technology', CURDATE()),
+('Finance & Accounting', CURDATE()),
+('Software Development', CURDATE()),
+('Leadership', CURDATE()),
+('Self-Improvement', CURDATE()),
+('Parenting & Relationships', CURDATE()),
+('Science & Research', CURDATE()),
+('Writing & Publishing', CURDATE()),
+('Career Development', CURDATE()),
+('Gaming', CURDATE()),
+('Sports & Adventure', CURDATE()),
+('Environmental Studies', CURDATE()),
+('Psychology', CURDATE()),
+('Entrepreneurship', CURDATE()),
+('Web Development', CURDATE()),
+('Cryptocurrency & Blockchain', CURDATE()),
+('AI & Machine Learning', CURDATE()),
+('Public Speaking', CURDATE()),
+('History & Culture', CURDATE()),
+('Spirituality & Mindfulness', CURDATE()),
+('Project Management', CURDATE());
 
 INSERT INTO Categories (name, created_at) VALUES 
-('Programmation', CURDATE()), 
-('Design', CURDATE()), 
-('Marketing', CURDATE()), 
-('Data Science', CURDATE()),
-('Business', CURDATE()), 
-('Personal Development', CURDATE()), 
-('Languages', CURDATE()), 
-('Health & Fitness', CURDATE()), 
-('Cooking & Culinary', CURDATE()), 
-('Travel & Lifestyle', CURDATE());
+('software engineer', CURDATE());
 
 INSERT INTO Tags (title, created_at) VALUES 
-('PHP', CURDATE()), 
-('JavaScript', CURDATE()), 
-('HTML', CURDATE()), 
-('Python', CURDATE()), 
-('Java', CURDATE()), 
-('C++', CURDATE()), 
-('SQL', CURDATE()), 
-('Docker', CURDATE()), 
-('AWS', CURDATE()), 
-('Leadership', CURDATE()), 
-('Entrepreneurship', CURDATE()), 
-('Marketing', CURDATE()), 
-('Finance', CURDATE()), 
-('Accounting', CURDATE()), 
-('Project Management', CURDATE()), 
-('Graphic Design', CURDATE()), 
-('Photography', CURDATE()), 
-('Drawing', CURDATE()), 
-('Painting', CURDATE()), 
-('Music Production', CURDATE()), 
-('Dance', CURDATE()), 
-('Public Speaking', CURDATE()), 
-('Time Management', CURDATE()), 
-('Stress Management', CURDATE()), 
-('Mindfulness', CURDATE()), 
-('Writing Skills', CURDATE()), 
-('English', CURDATE()), 
-('French', CURDATE()), 
-('Spanish', CURDATE()), 
-('German', CURDATE()), 
-('Mandarin', CURDATE()), 
-('Japanese', CURDATE()), 
-('Cooking', CURDATE()), 
-('Baking', CURDATE()), 
-('Fitness', CURDATE()), 
-('Yoga', CURDATE()), 
-('Gardening', CURDATE()), 
-('Travel Planning', CURDATE()), 
-('Career Coaching', CURDATE());
+('Web Development', CURDATE()), 
+('App Development', CURDATE()), 
+('UX/UI Design', CURDATE()), 
+('SEO', CURDATE()), 
+('Content Marketing', CURDATE()), 
+('Data Analysis', CURDATE()), 
+('Machine Learning', CURDATE()), 
+('Deep Learning', CURDATE()), 
+('Business Strategy', CURDATE()), 
+('Startup Culture', CURDATE()), 
+('Personal Branding', CURDATE()), 
+('Resume Writing', CURDATE()), 
+('Interview Prep', CURDATE()), 
+('Emotional Intelligence', CURDATE()), 
+('Self-Care', CURDATE()), 
+('Positive Thinking', CURDATE()), 
+('Digital Art', CURDATE()), 
+('Character Design', CURDATE()), 
+('Video Editing', CURDATE()), 
+('Podcasting', CURDATE()), 
+('Violin', CURDATE()), 
+('Piano', CURDATE()), 
+('Guitar', CURDATE()), 
+('Fitness Coaching', CURDATE()), 
+('Pilates', CURDATE()), 
+('Marathon Training', CURDATE()), 
+('Nutrition', CURDATE()), 
+('Weight Loss', CURDATE()), 
+('Vegan Cooking', CURDATE()), 
+('Travel Hacks', CURDATE()), 
+('Remote Work', CURDATE()), 
+('AI Tools', CURDATE()), 
+('Cloud Computing', CURDATE()), 
+('Blockchain', CURDATE()), 
+('Cybersecurity', CURDATE()), 
+('Robotics', CURDATE()), 
+('Physics', CURDATE()), 
+('Astronomy', CURDATE()), 
+('Psychotherapy', CURDATE()), 
+('World History', CURDATE()), 
+('Cultural Studies', CURDATE()), 
+('Sustainable Living', CURDATE()), 
+('Green Energy', CURDATE()), 
+('E-commerce', CURDATE()), 
+('Dropshipping', CURDATE()), 
+('Fashion Design', CURDATE()), 
+('Interior Design', CURDATE()), 
+('Language Learning', CURDATE()), 
+('Online Teaching', CURDATE()), 
+('Parenting Tips', CURDATE()), 
+('Pet Care', CURDATE());
 
 
-select * from `Cours`;
-
-SELECT User.id  , User.name , User.email ,Roles.name as role_title 
-from User INNER JOIN Roles on Roles.id = User.role_id where User.role_id < 3 ;
 
 
-CREATE TRIGGER set_isActive_before_insert
-BEFORE INSERT ON User
-FOR EACH ROW
-BEGIN
-    IF NEW.role_id = 2 THEN
-        SET NEW.isActive = FALSE;
-    ELSE
-        SET NEW.isActive = TRUE;
-    END IF;
-END
+
 
 INSERT INTO Cours (title, description, content, cat_id, isArchive, created_at) VALUES
 ('Introduction à la Programmation', 
@@ -238,7 +263,7 @@ select * from `Inscription` ;
 
 Insert Into `Inscription`(user_id,cour_id,created_at) VALUES (4,3,CURRENT_DATE);
 
-Alter Table `Cours` add column author int ;
+Alter Table `Cours` add column photo text ;
 
 select `Cours`.id, Cours.title , Cours.description , Cours.content, Cours.author , Categories.name , User.name as Auth ,Categories.id as CategiId 
 from Cours
@@ -261,3 +286,44 @@ select * from `Cours` limit 6 OFFSET 1
 
 
 select COUNT(*) from `Cours`
+
+
+select `Cours`.title ,cour_id , COUNT(user_id) as Users 
+from `Inscription` INNER join `Cours` on `Inscription`.cour_id = Cours.id
+ GROUP BY cour_id ORDER BY Users DESC LIMIT 1;
+
+select  `Categories`.name , COUNT(Cours.id)
+from `Cours` INNER join `Categories` on `Cours`.cat_id = `Categories`.id 
+GROUP BY `Categories`.name 
+
+
+
+select cour_id , COUNT(user_id )  from `Inscription`
+where cour_id = 1
+ GROUP BY cour_id
+
+
+SELECT  * , `Inscription`.user_id  from `Inscription`
+inner join `Cours` on `Cours`.id = `Inscription`.cour_id
+inner join `User` on `User`.id = `Cours`.author 
+
+
+select * from `Inscription`
+
+select * from User
+
+select * from `Cours`
+
+
+SELECT COUNT(i.user_id) FROM `Inscription` i
+JOIN (SELECT * FROM `Cours` WHERE author = 14) c ON c.id = i.cour_id;
+
+
+select * from `User` ;
+
+select * from `Cours` where Cours.`isArchive` is NULL
+
+
+select `Categories`.name , COUNT(`Cours`.id) from `Categories` where `Categories`.created_at > '2025-01-21';
+
+

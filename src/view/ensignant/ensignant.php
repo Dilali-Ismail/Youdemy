@@ -35,8 +35,8 @@ if (isset($_POST['addCours']) && !empty($_POST['tags']) ){
   $content = $_POST['content'];
   $categorie_id = $_POST['category'];
   $tags = $_POST['tags']; 
-  
-  $result = $cours->createCoursC($title, $description, $content,$categorie_id,$tags,$_SESSION['user_id']);
+  $coverture = $_POST['photo'];
+  $result = $cours->createCoursC($title ,$coverture , $description, $content,$categorie_id,$tags,$_SESSION['user_id']);
 
   if ($result) {
     header("Location:./ensignant.php");
@@ -52,10 +52,6 @@ if (isset($_POST['editCours'])  && !empty($_POST['ediTtags']) ){
   $contentEdit = $_POST['edit-video'];
   $categorie_idEdit = $_POST['edit-category'];
   $newTags = $_POST['ediTtags']; 
-  
-  
-  
- 
   $result = $cours->editCoursC( $id,$titleEdit ,$descriptionEdit,$contentEdit,$categorie_idEdit,$newTags);
 
   if ($result) {
@@ -80,7 +76,10 @@ if($cours->NbrCours($_SESSION['user_id'])){
   $NbrCours = $cours->NbrCours($_SESSION['user_id']) ;
 }
 
+
 $NbrCours['NbrCours'];
+
+
 $resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
 ?>
 
@@ -91,6 +90,7 @@ $resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestion des Cours</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -100,7 +100,7 @@ $resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
   <!-- Navbar -->
     <nav class="bg-white shadow">
     <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-      <a href="../../../index.php" class="text-2xl font-bold text-purple-600">Youdemy</a>
+      <a href="../../../index.php" class="text-2xl font-bold text-purple-600"><img src="../../../public/img/udemy.png" alt="logo" width="120px" height="120px"></a>
       <div class="hidden md:flex items-center justify-center space-x-6 flex-grow">
         <a href="../../../index.php" class="text-gray-600 hover:text-purple-600">Accuille</a>
         <a href="./ensignant.php" class="text-gray-600 hover:text-purple-600">Mes Cours</a>
@@ -120,7 +120,7 @@ $resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
       <p class="text-lg text-purple-200 mt-4">Créez, modifiez et gérez vos cours facilement.</p>
     </div>
   </header>
-
+  
   <!-- Main Section -->
   <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
@@ -136,6 +136,11 @@ $resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
     <h2 class="text-2xl font-semibold mb-6 text-gray-800">Bonjour Mr <?= $_SESSION['user_name']?> </h2>
   <h2 class="text-2xl font-semibold mb-6 text-gray-800">Mes Cours</h2>
   <div id="courses-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <?php if (!$resultCours): ?>
+    <p>  Aucun Cours  </p>
+    <?php endif ?>
+
+    <?php if ($resultCours): ?>
     <!-- Example Course Card -->
  <!-- Card______________________________________________________________________ -->
     <?php foreach ($resultCours as $SinglCours  => $value): ?>
@@ -157,6 +162,7 @@ $resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
       <h3 class="text-lg font-bold mt-4 mb-2"><?=$value['title']?></h3>
       <input type="text" hidden name="idcours" value="<?=$value['id'] ?>">
 
+      <?php $users = $cours->UsersInEveryCours($value['id']) ; ?>
       <!-- Categories -->
       <p class="text-sm text-gray-600">Catégorie: <?=$value['name']?></p>
 
@@ -174,19 +180,33 @@ $resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
       </p>
 
       <!-- Buttons -->
-      <div class="mt-4 flex space-x-4">
+      <div class="mt-4 flex justify-between items-center">
+    <!-- Boutons -->
+    <div class="flex space-x-4">
         <button 
-          type="button"
-          class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700"
-          onclick="openEditModal( <?=$value['id'] ?> ,'<?=$value['title']?>', <?=$value['CategiId']?> , '<?=$value['Tags_id']?>' , '<?=$value['description']?>', '<?=$value['content']?>')">
-          Modifier
+            type="button"
+            class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700"
+            onclick="openEditModal( <?=$value['id'] ?> ,'<?=$value['title']?>', <?=$value['CategiId']?> , '<?=$value['Tags_id']?>' , '<?=$value['description']?>', '<?=$value['content']?>')">
+            Modifier
         </button>
-        <button class="text-red-600 hover:underline" name = "deletCours">Supprimer</button>
-      </div>
+        <button class="text-red-600 hover:underline" name="deletCours">Supprimer</button>
+    </div>
+
+    <!-- Icône avec le numéro -->
+    <div class="flex items-center space-x-2">
+        <i class="fa-solid fa-user text-xl text-gray-700"></i>
+        <p class="text-gray-800 text-lg font-medium">
+        <?= $users['Numbr'] ?? 0;  ?>
+        </p>
+    </div>
+</div>
+
     </div>
      </form>
 
     <?php endforeach; ?>
+
+    <?php endif ?>
 
     <!-- Card______________________________________________________________________ -->
     
@@ -258,20 +278,7 @@ $resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
 <!-- --------------------------------------------------------------------------------------- -->
 
     <!-- Statistics Section -->
-    <section class="mt-12">
-      <h2 class="text-2xl font-semibold mb-6 text-gray-800">Statistiques</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white shadow rounded-lg p-4">
-          <h3 class="text-lg font-bold">Nombre de cours</h3>
-          <p class="text-4xl font-semibold text-purple-600"> <?php echo  $NbrCours['NbrCours'] ?> </p>
-        </div>
-        <div class="bg-white shadow rounded-lg p-4">
-          <h3 class="text-lg font-bold">Étudiants inscrits</h3>
-          <p class="text-4xl font-semibold text-purple-600">120</p>
-        </div>
-
-      </div>
-    </section>
+    
   </main>
 
   <!-- Footer -->
@@ -283,10 +290,10 @@ $resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
 
   <!-- div formular -->
    <!-- div formular______________________________________________________________________ -->
-  <div id="create-course-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+   <div id="create-course-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
       <h2 class="text-2xl font-semibold mb-6 text-gray-800">Ajouter un nouveau cours</h2>
-      <form id="add-course-form" class="space-y-6" method="post">
+      <form id="add-course-form" class="space-y-6" method="post" enctype="multipart/form-data">
         <!-- Title -->
         <div>
           <label for="title" class="block text-sm font-medium text-gray-700">Titre</label>
@@ -304,16 +311,14 @@ $resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
           </select>
         </div>
         <!-- Tags -->
-   
-            <div>
-            <label for="tags" class="block text-sm font-medium text-gray-700">Tags</label>
-            <select class="js-example-basic-multiple js-example-responsive " style="width: 75%" name="tags[]" multiple="multiple">
+        <div>
+          <label for="tags" class="block text-sm font-medium text-gray-700">Tags</label>
+          <select class="js-example-basic-multiple js-example-responsive" style="width: 75%" name="tags[]" multiple="multiple">
             <?php foreach ($resultTags  as $tag => $value ) :?>
                 <option value="<?=$value['id'] ?>"><?=$value['title']?></option>
              <?php endforeach ;?>
-            </select>
-            </div>
-
+          </select>
+        </div>
         <!-- Description -->
         <div>
           <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
@@ -322,10 +327,19 @@ $resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
         </div>
         <!-- Content -->
         <div>
-           <label for="content" class="block text-sm font-medium text-gray-700">URL de la vidéo</label>
+           <label for="content" class="block text-sm font-medium text-gray-700">URL de la vidéo / doc</label>
            <input type="url" id="content" name="content" placeholder="https://example.com/video"
                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500"
                 required>
+        </div>
+        <!-- Photo -->
+        <div>
+          <label for="photo" class="block text-sm font-medium text-gray-700">Couverture</label>
+          <input type="file" id="coverture" name="photo" accept="image/*"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500">
+            <img id="imgsrc" src="" alt="" name="image" width="100px" >
+           <input id="photo" type="hidden" name="photo" value="" >
+
         </div>
         <!-- Submit Buttons -->
         <div class="flex justify-end">
@@ -333,15 +347,15 @@ $resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
             class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400">
             Annuler
           </button>
-          <button type="submit"
-                  name ="addCours"
+          <button type="submit" name="addCours"
             class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 ml-2">
             Enregistrer
           </button>
         </div>
       </form>
     </div>
-  </div>
+</div>
+
 <!-- div formular______________________________________________________________________ -->
   <!-- JavaScript -->
   <script>
@@ -388,6 +402,29 @@ $resultCours = $cours->getCoursByAuthor($_SESSION['user_id']);
   function closeEditModal() {
     document.getElementById('edit-modal').classList.add('hidden');
   }
+
+
+  document.getElementById('coverture').addEventListener('change', (event) => {
+  
+  const file = event.target.files[0];
+  if (file) {
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+
+        document.getElementById('imgsrc').setAttribute('src',e.target.result);
+        document.getElementById('photo').value = document.getElementById('imgsrc').getAttribute('src');
+      };
+
+      reader.readAsDataURL(file);
+
+    }else{
+      //imagePreview.style.display = 'none';
+    }
+     })
+
+     document.getElementById('photo').value = document.getElementById('imgsrc').getAttribute('src');
+
 </script>
 
 

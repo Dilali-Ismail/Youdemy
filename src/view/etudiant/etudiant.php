@@ -42,7 +42,7 @@ if (isset($_POST['deconnecter'])) {
   <!-- Navbar -->
   <nav class="bg-white shadow">
     <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-      <a href="../../../index.php" class="text-2xl font-bold text-purple-600">Youdemy</a>
+      <a href="../../../index.php" class="text-2xl font-bold text-purple-600"><img src="../../../public/img/udemy.png" alt="logo" width="120px" height="120px"></a>
       <div class="hidden md:flex items-center justify-center space-x-6 flex-grow">
         <a href="../../../index.php" class="text-gray-600 hover:text-purple-600">Accuille</a>
         <a href="./etudiant.php" class="text-gray-600 hover:text-purple-600">Mes Cours</a>

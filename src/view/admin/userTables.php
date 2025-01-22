@@ -22,8 +22,13 @@ if(isset($_POST['IdUserSusp'])){
 
 }
 
-$resulUsers = $User->getUsers();
+if(isset($_POST['IdUserdeSusp'])){
+    $id = $_POST['IdUserdeSusp'];
+    $User->DsusPUserM($id);
 
+}
+
+$resulUsers = $User->getUsers();
 ?>
 
 <!DOCTYPE html>
@@ -208,7 +213,12 @@ $resulUsers = $User->getUsers();
                                             </td>
                                             <td>  
                                             <?php if($value['isActive'] == 1) : ?>
+                                             <?php if($value['suspended'] == 0) : ?>
                                              <button onclick="suspendUserFunc(event , <?=$value['id'] ?>)" type="button" class="btn btn-primary"><input type="text" hidden >Suspended</button>
+                                             <?php endif ;?>
+                                             <?php if($value['suspended'] == 1) : ?>
+                                             <button onclick="desuspendUserFunc(event , <?=$value['id'] ?>)" type="button" class="btn btn-primary"><input type="text" hidden >Desuspended</button>
+                                             <?php endif ;?>
                                              <?php endif ;?>
                                              <button href="#" class="btn btn-danger" onclick="deletUserFunc(event , <?=$value['id'] ?>)" name="deletetUser"><input type="text" hidden >Supprimer</button>
                                             </td>
@@ -291,6 +301,14 @@ $resulUsers = $User->getUsers();
         e.preventDefault();
         const inputhidden = event.target.querySelector('input');
         inputhidden.setAttribute("name" , 'IdUserSusp');
+        inputhidden.setAttribute("value" , id);
+        console.log(inputhidden)
+        document.getElementById('tableusersubmit').submit();
+    }
+    function desuspendUserFunc(e , id){
+        e.preventDefault();
+        const inputhidden = event.target.querySelector('input');
+        inputhidden.setAttribute("name" , 'IdUserdeSusp');
         inputhidden.setAttribute("value" , id);
         console.log(inputhidden)
         document.getElementById('tableusersubmit').submit();

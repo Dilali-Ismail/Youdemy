@@ -15,7 +15,7 @@ use App\config\Connexion ;
 
 
   public function getAllusers(){
-     $querry = " SELECT User.id  , User.name , User.email ,Roles.name as role_title , User.isActive
+     $querry = " SELECT User.id  , User.name , User.email , User.suspended ,Roles.name as role_title , User.isActive
                from User INNER JOIN Roles on Roles.id = User.role_id where User.role_id = 2 and User.deleted_at IS NULL ";
      $stmt = $this->con->prepare($querry) ;
      $stmt->execute(); 
@@ -77,7 +77,7 @@ use App\config\Connexion ;
            
 
             $stmt->execute();
-            // i should return an user object but how ?
+          
             return $this->con->lastInsertId();
             
             
@@ -119,7 +119,21 @@ use App\config\Connexion ;
             return false;
         }
        }
-
+       public function DsusPUserM($id){
+        try{
+        $query = "UPDATE User SET User.suspended = 0 WHERE User.id = :id";
+        $stmt = $this->con->prepare($query);
+        $stmt->bindParam(':id',$id);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $this->con->lastInsertId();
+        }
+        catch (PDOException $e) {
+            echo "not activing user";
+            error_log("Error suspension user: " . $e->getMessage());
+            return false;
+        }
+       }
 
        public function deletUserM($id){
 

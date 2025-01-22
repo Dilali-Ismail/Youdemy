@@ -33,9 +33,9 @@ public function searchtCours($search ) {
    return $this->Coursmodel->search($search);
 }
 
-    public function createCoursC($title, $description, $content,$categorie_id,$tags,$author){
+    public function createCoursC($title,$coverture , $description, $content,$categorie_id,$tags,$author){
 
-      $createCours = $this->Coursmodel->create($title, $description, $content,$categorie_id,$tags,$author);
+      $createCours = $this->Coursmodel->create($title ,$coverture , $description, $content,$categorie_id,$tags,$author);
       return  $createCours ;
     }
 
@@ -82,11 +82,33 @@ public function searchtCours($search ) {
     return $Nbr ;
   }
 
-
+  //statistique
   public function TotalCours(){
     $ToTalCours =  $this->Coursmodel->getTotalCourses();
     return $ToTalCours ;
   }
+
+  public function CourAvecPlusEtudiants(){
+    $CoursUsers =  $this->Coursmodel->CourAvecPlusEtudiants();
+    return  $CoursUsers ;
+  }
+
+  public function RepartitionParCategorie(){
+    $Repartition =  $this->Coursmodel->RepartitionParCategorie();
+    return  $Repartition ;
+  }
+
+  public function TopTroisEnsignants(){
+    $Repartition =  $this->Coursmodel->TopTroisEnsignants();
+    return  $Repartition ;
+  }
+
+  public function UsersInEveryCours($cour){
+    $Repartition =  $this->Coursmodel->UsersInEveryCours ($cour);
+    return  $Repartition ;
+  }
+
+
 }
 
 

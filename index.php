@@ -55,7 +55,7 @@ $totalPages = $data['totalPages'];
   <!-- Navbar -->
   <nav class="bg-white shadow">
     <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-      <a href="#" class="text-2xl font-bold text-black">Udemy</a>
+      <a href="#" class="text-2xl font-bold text-black"><img src="./public/img/udemy.png" alt="" width="120px" height="120px"></a>
       <div class="hidden md:flex items-center justify-center space-x-6 flex-grow">
         <?php if(isset($_SESSION['user_id']) && (strcmp($_SESSION['user_role'], "Enseignant") == 0 || strcmp($_SESSION['user_role'], "Etudiant") == 0)): ?>
             <a href="../../../index.php" class="text-gray-600 hover:text-purple-600">Accueil</a>
@@ -100,7 +100,7 @@ $totalPages = $data['totalPages'];
       <?php foreach ($courses as $value): ?>
       <form action="" method="post">
         <div class="bg-white shadow rounded-md overflow-hidden">
-          <img src="./public/img/udemy.png" alt="Course Image" class="w-full h-48 object-cover">
+          <img src="<?= $value['photo'] ?>" alt="Course Image" class="w-full h-48 object-cover">
           <div class="p-4">
             <input type="text" hidden name="idcours" value="<?= $value['id'] ?>">
             <h3 class="font-bold text-lg"><?= $value['title'] ?></h3>
@@ -156,7 +156,7 @@ $totalPages = $data['totalPages'];
      `
       <form action="" method="post">
         <div class="bg-white shadow rounded-md overflow-hidden">
-          <img src="./public/img/udemy.png" alt="Course Image" class="w-full h-48 object-cover">
+          <img src="${item.photo}" alt="Course Image" class="w-full h-48 object-cover">
           <div class="p-4">
             <input type="text" hidden name="idcours" value="${item.id}">
             <h3 class="font-bold text-lg">${item.title}</h3>

@@ -19,7 +19,7 @@ parent::__construct('Cours');
 
 
 public function getAll($limit ='', $offset =''){
-    $query = "SELECT Cours.id, Cours.title , Cours.description , Cours.content ,User.name as author , Categories.name ,Categories.id as CategiId ,
+    $query = "SELECT Cours.id, Cours.title , Cours.description , Cours.content , Cours.photo ,User.name as author , Categories.name ,Categories.id as CategiId ,
               GROUP_CONCAT(Tags.title) as tags , GROUP_CONCAT(Tags.id) as Tags_id 
               from
                $this->table_name 
@@ -40,33 +40,28 @@ public function getAll($limit ='', $offset =''){
                 $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
                 $stmt->execute();
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    // $courses = [];
+                   
                 if(!$result){
                 return  [];
                 }
                 else{
                             return $result ;
-                            // foreach ($result as $row) {
-                            //     $tags = explode(',', $row['tags']);
-                            //     $categorie = new categorie($row['cat_id'], $row['name']); 
-                            //     $courses[] = new Cours($row['id'], $row['title'], $row['description'], $row['content'], $tags, $categorie);
-                            // }
-
-                            // return $courses;
+                           
                         }
             }
 
-public function create($title, $description ='', $content ='',$categorie_id ='',$tags = [],$author='') {
+public function create($title ,$coverture ='' , $description ='', $content ='',$categorie_id ='',$tags = [],$author='') {
     try {
     
-        $query = "INSERT INTO $this->table_name (title, description, content, cat_id ,isArchive, created_at , updated_at , deleted_at,Cours.author)
-                  VALUES (:title, :description, :content, :categorie_id,  NULL , CURRENT_DATE , NULL , NULL,:Author)";
+        $query = "INSERT INTO $this->table_name (title, description, content, cat_id ,isArchive, created_at , updated_at , deleted_at,Cours.author,Cours.photo)
+                  VALUES (:title, :description, :content, :categorie_id,  NULL , CURRENT_DATE , NULL , NULL,:Author,:photo)";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(':title', $title);
         $stmt->bindParam(':description', $description);
         $stmt->bindParam(':content', $content); 
         $stmt->bindParam(':categorie_id', $categorie_id);
         $stmt->bindParam(':Author', $author);
+        $stmt->bindParam(':photo', $coverture);
        
         $stmt->execute();
          
@@ -163,19 +158,13 @@ public function getAllBYAuthor($Author){
     $stmt = $this->con->prepare($query);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    // $courses = [];
+   
 if(!$result){
 return null ;
 }
 else{
     return $result ;
-    // foreach ($result as $row) {
-    //     $tags = explode(',', $row['tags']);
-    //     $categorie = new categorie($row['cat_id'], $row['name']); 
-    //     $courses[] = new Cours($row['id'], $row['title'], $row['description'], $row['content'], $tags, $categorie);
-    // }
-
-    // return $courses;
+   
 }
 }
 
@@ -197,13 +186,8 @@ public function inscriptionCours($UserId){
     }
     else{
         return $result ;
-        // foreach ($result as $row) {
-        //     $tags = explode(',', $row['tags']);
-        //     $categorie = new categorie($row['cat_id'], $row['name']); 
-        //     $courses[] = new Cours($row['id'], $row['title'], $row['description'], $row['content'], $tags, $categorie);
-        // }
+        
     
-        // return $courses;
     }
 }
 
@@ -244,24 +228,7 @@ public function InscripterOff($CoursId){
 
 }
 
-public function NbrCours ($Author){
-    try{
-    $query = "SELECT COUNT(*) as NbrCours from `Cours` where Cours.author = :AuthorID and deleted_at is NULL ";
-    $stmt = $this->con->prepare($query);
-    $stmt->bindParam(':AuthorID', $Author);
-    $stmt->execute();
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-   if($row)
-    return $row;
-    }
 
-    catch (PDOException $e) {
-
-        error_log("Error : " . $e->getMessage());
-        return false;
-    }
-
-}
 
 public function NbrInscription ($Author){
     try{
@@ -290,7 +257,7 @@ public function getTotalCourses(){
 
 
 public function search($search){
-    $query = "SELECT Cours.id, Cours.title , Cours.description , Cours.content ,User.name as author , Categories.name ,Categories.id as CategiId ,
+    $query = "SELECT Cours.id, Cours.title , Cours.description ,Cours.photo, Cours.content ,User.name as author , Categories.name ,Categories.id as CategiId ,
               GROUP_CONCAT(Tags.title) as tags , GROUP_CONCAT(Tags.id) as Tags_id 
               from
                $this->table_name 
@@ -328,8 +295,26 @@ else{
 
     // return $courses;
 }
+}
+//statistiques
 
 
+public function NbrCours ($Author){
+    try{
+    $query = "SELECT COUNT(*) as NbrCours from `Cours` where Cours.author = :AuthorID and deleted_at is NULL ";
+    $stmt = $this->con->prepare($query);
+    $stmt->bindParam(':AuthorID', $Author);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+   if($row)
+    return $row;
+    }
+
+    catch (PDOException $e) {
+
+        error_log("Error : " . $e->getMessage());
+        return false;
+    }
 
 }
 
@@ -338,15 +323,86 @@ else{
 
 
 
+public function CourAvecPlusEtudiants(){
+    try{
+         $query = "SELECT Cours.title ,cour_id , COUNT(user_id) as Users 
+                   from Inscription INNER join Cours on Inscription.cour_id = Cours.id
+                   GROUP BY cour_id ORDER BY Users DESC LIMIT 1 ";
+    
+    $stmt = $this->con->prepare($query);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+   if($row)
+    return $row;
+    }
 
+    catch (PDOException $e) {
 
+        error_log("Error : " . $e->getMessage());
+        return false;
+    }
+}
 
+public function RepartitionParCategorie(){
+                $query = "SELECT Categories.name , COUNT(Cours.id) as Courses
+                           from Cours INNER join Categories on Cours.cat_id = Categories.id 
+                           GROUP BY Categories.name" ; 
+                $stmt = $this->con->prepare($query);  
+                $stmt->execute();
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                if(!$result){
+                return  [];
+                }
+                else{
+                return $result ;
+                }
+            }
+        
 
+            public function TopTroisEnsignants(){
+                $query = "SELECT User.name , Cours.author , COUNT(`Cours`.id) as Courses
+                        from `Cours` inner join `User` on User.id = `Cours`.author
+                        where `Cours`.deleted_at IS Null 
+                        GROUP BY `Cours`.author
+                        ORDER BY Courses DESC limit 3" ; 
+                $stmt = $this->con->prepare($query);  
+                $stmt->execute();
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                if(!$result){
+                return  [];
+                }
+                else{
+                return $result ;
+                }
+            }
 
+            public function UsersInEveryCours ($cour){
+                try{
+                $query = "SELECT cour_id , COUNT(user_id ) as Numbr  from `Inscription`
+                          where cour_id = :Cour
+                          GROUP BY cour_id ";
+                $stmt = $this->con->prepare($query);
+                $stmt->bindParam(':Cour', $cour);
+                $stmt->execute();
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+               if($row)
+                return $row;
+                }
+                catch (PDOException $e) {
+            
+                    error_log("Error : " . $e->getMessage());
+                    return false;
+                }
+            
+            }
 
-
-
-
-
+            public function getAllCoursByAuth(){
+                $query = "SELECT COUNT(*) FROM Cours WHERE deleted_at IS NULL ";
+                 $stmt = $this->con->prepare($query);
+                $stmt->execute();
+                return $stmt->fetchColumn();
+            }
+    
+    
 }
 ?>

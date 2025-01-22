@@ -30,7 +30,7 @@ if (isset($_POST['submit'])) {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex h-16 items-center">
         <a href="../../../index.php">
-          <h1 class="text-2xl font-bold text-purple-600">Youdemy</h1>
+        <img src="../../../public/img/udemy.png" alt="logo" width="120px" height="120px">
         </a>
       </div>
     </div>

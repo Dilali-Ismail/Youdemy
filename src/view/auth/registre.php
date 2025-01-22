@@ -1,6 +1,8 @@
 <?php
 require_once '../../../vendor/autoload.php';
 use App\Controller\Auth\Authcontroller;
+
+$message = ""; 
 if(isset($_POST['inscription']))
 {
 if(!empty($_POST['name']) && !empty($_POST['email']) && !empty($_POST['password']))
@@ -11,6 +13,8 @@ if(!empty($_POST['name']) && !empty($_POST['email']) && !empty($_POST['password'
   $role = $_POST['role'];
   $Auth = new Authcontroller();
   $login = $Auth->createUser($name,$email,$password,$role);
+}else{
+     $message ="les champs sont vides";
 }
 }
 ?>
@@ -27,7 +31,7 @@ if(!empty($_POST['name']) && !empty($_POST['email']) && !empty($_POST['password'
   <nav class="bg-white shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex h-16 items-center">
-       <a href="../../../index.php"><h1 class="text-2xl font-bold text-purple-500">Youdemy</h1></a> 
+       <a href="../../../index.php"> <img src="../../../public/img/udemy.png" alt="logo" width="120px" height="120px"></a> 
       </div>
     </div>
   </nav>
@@ -58,7 +62,11 @@ if(!empty($_POST['name']) && !empty($_POST['email']) && !empty($_POST['password'
          Enseignant
         </button>
       </div>
-
+      <?php if (!empty($message)) : ?>
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+          <?= htmlspecialchars($message); ?>
+        </div>
+      <?php endif; ?>
       <!-- Form -->
       <form class="mt-8 space-y-6" action="" method="post">
         <!-- Dynamic Fields -->

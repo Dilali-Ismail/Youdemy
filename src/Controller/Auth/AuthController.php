@@ -73,5 +73,13 @@ public function login($email, $password) {
         $userdelet = $this->usermodel->susPUserM($id);
         return $userdelet ;
        }
+
+      
+
+       public function  DsusPUserM($id){
+
+        $userdelet = $this->usermodel-> DsusPUserM($id);
+        return $userdelet ;
+       }
 }
 ?>
